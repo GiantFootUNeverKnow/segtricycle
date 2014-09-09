@@ -1,0 +1,19 @@
+//UVa11388
+#include <iostream>
+
+using namespace std;
+
+int main(){
+	//freopen("file2.txt","r",stdin);
+	int num;
+	cin >> num;
+	long long int G,L;
+	for (int i = 0; i < num; i++ ){
+		cin >> G >> L;
+		if (L % G == 0)
+			cout << G << " " << L <<endl;
+		else 
+			cout << -1 << endl;
+	}
+	return 0;
+}
