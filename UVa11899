@@ -1,0 +1,52 @@
+UVa 11899
+#include <iostream>
+
+using namespace std;
+long prime[5000];
+long used[4010];
+
+int main(){
+	long p = 0;
+	for (long i = 2;i<4010;i++){
+		if ( used[i] == 0){
+			prime[p] = i;
+			p++;
+			for (long j = i+i; j < 4010; j +=i) used[j] = 1;
+		}
+	}//listing primes
+	long num;
+	cin >> num;
+	long A,C;
+	long x;
+	for (long i = 0; i < num; i++){
+		cin >> A >> C;
+		if (C % A == 0)
+		{
+			long B = 1;
+			for (long j = 0; j <p;j++){
+				long degreeInA = 0;
+				long degreeInC = 0;
+				while (A % prime[j] == 0) {//factorizartions 
+					A = A / prime[j];
+					degreeInA ++;
+				}
+				while (C % prime[j] == 0){
+					C = C /prime[j];
+					degreeInC ++;
+				}
+				if (degreeInA != degreeInC)
+				{
+					for (long k = 0; k< degreeInC; k++)
+						B *= prime[j];
+				}
+			}
+			B *= C / A;
+			cout << B << endl;
+			//x = C /A;
+			//cout << gcd(A,x) * x << endl;
+		}
+		else 
+			cout << "NO SOLUTION" << endl;
+	}
+	return 0;
+}
