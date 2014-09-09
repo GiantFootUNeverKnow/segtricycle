@@ -1,0 +1,60 @@
+//UVa11292
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+
+int main(){
+	//freopen("file1.txt","r",stdin);
+	int n,m;//n is # of heads, m is # of knights
+	cin >> n >> m;
+	vector<long int> heads;
+	vector<long int> knights;
+	while (!(n == 0 && m == 0)){
+		long int cat;
+		heads.clear();
+		knights.clear();
+		for (int i = 0; i< n;i++)
+		{
+			cin >> cat;
+			heads.push_back(cat);
+		}
+		for (int i = 0; i < m;i++){
+			cin >> cat;
+			knights.push_back(cat);
+		}
+		if (n > m )
+			cout << "Loowater is doomed!" << endl;
+		else {
+			sort(heads.begin(),heads.end());
+			sort(knights.begin(),knights.end());
+			int j = knights.size()-1;
+			int s = 0;//the salary for knights
+			bool ifkill = true;
+			for (int i = heads.size() - 1;i>=0; i--){//decide whether we could slay the dragon
+				int RemainedXXL = heads[i];//currently the biggest head
+				if (j < 0 || knights[j] < RemainedXXL){
+					cout << "Loowater is doomed!" << endl;
+					ifkill = false;
+					break;					
+				}
+				else
+				{
+					j--;
+				}
+			}
+			if (ifkill){
+				j = 0;
+				for (int i = 0; i < heads.size(); i++){
+					int easypuppy = heads[i];
+					while (knights[j] < easypuppy) j++;
+					s += knights[j];
+					j++;
+				}
+				cout << s << endl;
+			}		
+		}
+		cin >>n >>m;
+	}
+	return 0;
+}
