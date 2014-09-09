@@ -1,0 +1,91 @@
+//UVa 11995
+#include <iostream>
+#include <stdlib.h>
+#include <stack>
+#include <queue>
+
+using namespace std;
+
+int main(){
+	//freopen("file.txt","r",stdin);
+	long num;
+	stack<long> S;
+	queue<long> Q;
+	priority_queue<long> pQ;
+	int cmd;//to read 1/2
+	int cat;//to read x
+	bool isS,isQ,ispQ;
+	while (cin >> num){
+		isS = isQ = ispQ = 1;//for determining datatype
+		int res;//Input receiver
+		//initializing
+		while (!S.empty()){
+			S.pop();
+		}
+		while (!Q.empty()){
+			Q.pop();
+		}
+		while (!pQ.empty()){
+			pQ.pop();
+		}
+		for (int i = 0; i < num; i++){
+			cin >> cmd >> cat;
+			if (cmd == 1){
+				if (isS) S.push(cat);
+				if (isQ) Q.push(cat);
+				if (ispQ) pQ.push(cat);
+			}
+			if (cmd == 2){
+				if (isS) {
+					if (S.empty())
+						isS = 0;
+					else {
+						res = S.top();
+						S.pop();
+						if (res != cat){
+							isS = 0;
+						}
+					}
+				}
+				if (isQ) {
+					if (Q.empty())
+						isQ = 0;
+					else{
+						res = Q.front();
+						Q.pop();
+						if (res != cat){
+							isQ = 0;
+						}
+					}
+				}
+				if (ispQ) {
+					if (pQ.empty()){
+						ispQ = 0;
+					}
+					else{
+						res = pQ.top();
+						pQ.pop();
+						if (res != cat){
+							ispQ = 0;
+						}
+					}
+				}
+			}
+		}
+		int ans = 0 + isS + isQ + ispQ;
+		if (ans > 1) 
+			cout << "not sure" << endl;
+		else if (ans == 0)
+			cout << "impossible" << endl;
+		else 
+		{
+			if (isS) 
+				cout << "stack" << endl;
+			else if (isQ) 
+				cout << "queue" << endl;
+			else
+				cout << "priority queue" << endl;
+		}
+	}
+	return 0;
+}
