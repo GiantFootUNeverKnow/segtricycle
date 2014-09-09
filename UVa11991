@@ -1,0 +1,47 @@
+#include <iostream>
+#include <stdlib.h>
+#include <vector>
+#include <map>
+using namespace std;
+
+int main(){
+	//freopen("file.txt","r",stdin);
+	vector< vector<long> > street;
+	map<long,long> addressbook;
+	long cat;
+	long n,m;//n is the # of integers and m is the # of queries
+	while (cin >> n >> m){
+		//initialize
+		addressbook.clear();
+		street.clear(); 
+		long num_house = 0;
+		for (long i = 1; i <= n; i++){//read data
+			cin >> cat;
+				if (addressbook.find(cat) == addressbook.end())
+				{
+					addressbook.insert(pair<long, long>(cat,num_house));
+					vector<long> tmp;
+					tmp.push_back(cat);//set the owner's name for this house
+					tmp.push_back(i);//tell its first occurence
+					street.push_back(tmp);//put this house onto street
+					num_house++;//increase the number of house on street
+				}
+				else {
+					long k = addressbook.find(cat)->second;//find the address of owner cat's house
+					street[k].push_back(i);//put one more guy into his house
+				}
+		}
+		long k,v;
+		for (long i = 1; i <=m ; i++ )//read queries
+		{			
+			cin >> k >> v;
+			if (addressbook.find(v) == addressbook.end() || k <= 0)
+				cout << 0 << endl;//null case
+			else if (street[addressbook.find(v)->second].size() < k + 1)
+				cout << 0 << endl;//null case
+			else 
+				cout << street[addressbook.find(v)->second][k] << endl;
+		}
+	}	
+	return 0;
+}
