@@ -1,0 +1,41 @@
+#include<iostream>
+#include<algorithm>	
+#include<utility>
+#include<vector>
+using namespace std;
+
+bool mycpm(pair<long,long> x, pair<long,long> y){ return x.second > y.second ;}
+//UVa 11729
+int main(){
+	//freopen("file.txt","r",stdin);
+	long num;//num of test case
+	cin >> num;
+	vector< pair<long ,long> > workload;
+	//declare mapping and pair
+	int a,b;
+	int k =1;//CASE RECORDER
+	while (num != 0){
+		//initialize
+		workload.clear();
+		//input
+		for (int i = 0; i < num;i++){
+			cin >> a >> b;
+			workload.push_back(make_pair(a,b));
+		}
+		//sorting accoding to the time to work
+		sort(workload.begin(),workload.end(),mycpm);
+		//calcutate the time consumption
+		long maxi = workload[0].first + workload[0].second;
+		long overhead = workload[0].first;
+		for (int i = 1; i < num ; i++){
+			overhead += workload[i].first;
+			if (overhead + workload[i].second > maxi)
+			{
+				maxi = overhead + workload[i].second;
+			}
+		}
+		cout << "Case " << k++ << ": " << maxi << endl;
+		cin >> num;
+	}
+	return 0;
+}
