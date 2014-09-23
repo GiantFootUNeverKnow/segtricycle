@@ -1,0 +1,30 @@
+#include <iostream>
+#include <vector>
+#include <stdlib.h>
+#include <math.h>
+
+using namespace std;
+
+float coordx[101];
+float coordy[101];
+
+float dist(float x1, float y1, float x2, float y2){
+	return sqrt( (x1 - x2) * (x1 - x2) - ( y1 - y2 ) * ( y1 - y2 ) );
+}
+
+int main(){
+	int numOfCase;
+	cin >> numOfCase;
+	for (int i = 0; i < numOfCase; i ++){
+		int numOfPoint;
+		cin >> numOfPoint;
+		for (int i = 0; i < numOfPoint; i++){
+			int cat,dog;
+			cin >> cat >> dog;
+			coordx[i] = cat;
+			coordy[i] = dog;
+		}coord[]
+		cout << dist(coord[]);		
+	}	
+	return 0;
+}
