@@ -1,0 +1,95 @@
+#include <iostream>
+#include <vector>
+#include <stdlib.h>
+#include <math.h>
+#include <float.h>
+#include <iomanip>
+
+using namespace std;
+
+float coordx[101];
+float coordy[101];
+
+class point{
+public:
+	float x;
+	float y;
+	point(float a, float b){
+		x = a;
+		y = b;
+	}
+	point(){
+		x =0;
+		y =0;
+	}
+};
+
+point freckles[101];
+
+float dist(float x1, float y1, float x2, float y2){
+	return sqrt( (x1 - x2) * (x1 - x2) + ( y1 - y2 ) * ( y1 - y2 ) );
+}
+
+float dist(point a, point b){
+	return dist(a.x,a.y,b.x,b.y);
+}
+
+float matrix[101][101];
+
+float prim(int size){
+	bool isin[101];
+	float cost[101];
+	for (int i = 1; i < size; i++) isin[i] = 0;
+	isin[0] = 1;
+	cost[0] = 0;
+	for (int i = 1; i < size; i++) cost[i] = matrix[i][0];
+	float sum = 0;
+	//initialization
+	for (int i = 1; i < size; i++){
+	//for each time, we add one freckle to our MST
+		float minCost = FLT_MAX;
+		int candidate = 0;
+		for(int j = 1; j <size; j++){
+			if (!isin[j] && cost[j] < minCost){
+				minCost = cost[j];
+				candidate = j;
+			//determine which freckle to add
+			}
+		}
+		//put that freckle inside the tree
+		isin[candidate] = 1;
+		sum += minCost;
+		//reflex other freckles
+		for (int j = 1; j < size; j++){
+			if (!isin[j])
+				if ( matrix[candidate][j] < cost[j] )
+					cost[j] = matrix[candidate][j]; 
+		}
+	}
+	return sum;
+}
+
+int main(){
+	//freopen("file.txt","r",stdin);
+	int numOfCase;
+	cin >> numOfCase;
+	int numOfPoint;
+	for (int i = 0; i < numOfCase; i ++){
+		cin >> numOfPoint;
+		float cat,dog;
+		for (int i = 0; i < numOfPoint; i++){			
+			cin >> cat >> dog;
+			freckles[i].x = cat;
+			freckles[i].y = dog;
+		}
+		for (int i = 0; i < numOfPoint; i++)
+			for (int j = 0; j < numOfPoint; j++){
+				matrix[i][j] = matrix[j][i] = dist(freckles[i],freckles[j]);
+			}
+		float ans=prim(numOfPoint);	
+		cout << fixed;
+		cout << setprecision(2) <<ans << endl;
+		if (i != numOfCase - 1) cout << endl;
+	}	
+	return 0;
+}
