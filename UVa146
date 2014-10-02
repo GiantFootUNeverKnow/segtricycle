@@ -1,0 +1,59 @@
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <stdio.h>
+
+using namespace std;
+
+bool discern(string & p){
+	if (p.length() <= 1){
+		return false;
+	}
+	else if (p.length() == 2){
+		if (p[0] < p[1]){
+			char tmp = p[0];
+			p[0] = p[1];
+			p[1] = tmp;
+			return 1;
+		}
+		else return false;
+	}
+	else{
+		string p2 = p.substr(1);
+		if ( discern(p2) ) {
+			p = p[0] + p2;
+			return true;
+			}
+		bool ans = 0;
+		char min = 'z' + 1;
+		int posOfMin;
+		for (int i = 1; i < p.length(); i++){
+			if (p[i] > p[0] && p[i] < min){
+				min = p[i];
+				posOfMin = i;
+				ans = 1;
+			}
+		}
+		if (ans) 
+		{
+			char tmp = p[0];
+			p[0] = min;
+			p[posOfMin] = tmp;
+			sort(p.begin() + 1, p.end());
+		}
+		return ans;
+	}	
+	//return 1;
+}
+
+int main(){
+	//freopen("file.txt","r",stdin);
+	string str;
+	cin >> str;
+	while (str.compare("#") != 0){
+	if  ( discern(str) ) cout << str << endl;
+	else cout << "No Successor" << endl;
+	cin >> str;
+	}
+
+}
