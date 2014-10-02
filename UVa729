@@ -1,0 +1,48 @@
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+bool number[16];
+
+long long power2(int degree){
+	long long s = 1;
+	for (int i = 0; i < degree; i++){
+		s *= 2;
+	}
+	return s;
+}
+
+void hamming(int length,int Hdist){
+	long long upperBound = power2(length);
+	for (long long natural = 1; natural < upperBound; natural++){
+		long long deci = natural;
+		int lime = 0;	
+		int Hd = 0;	
+		while (deci != 0){
+			number[lime++] = deci % 2;
+			if (deci % 2) Hd++;
+			deci = deci / 2;
+		}
+		if ( Hd == Hdist ){
+			for (int j = length-1;j > -1; j--){
+				cout << number[j];
+			}
+			cout << endl;
+		} 
+		//output backward
+	}
+}
+
+int main(){
+	int nN;
+	cin >> nN;
+	int N, H;
+	for(int i = 0; i < nN ; i++ ){
+		cin >> N >> H ;
+		memset(number,0,16);
+		hamming(N,H);
+		if (i != nN-1) cout << endl;
+	} 
+	return 0;
+}
