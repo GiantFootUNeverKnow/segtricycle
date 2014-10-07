@@ -1,0 +1,132 @@
+#include <iostream>
+#include <string>
+#include <string.h>
+#include <stdio.h>
+using namespace std;
+
+int possib[6];
+int n;
+int ans[6];
+string sentence[50];
+string species[3] = {"divine","evil","human"};
+string sky[2] = {"day","night"};
+bool isThereHuman;
+
+bool judgeStatement(int speaker, int character[], int time,string statement){
+	bool TF = 1;	
+	string lastWord =statement.substr(statement.find_last_of(' ') + 1);
+	lastWord.erase(lastWord.end() - 1);
+	if (statement.find("not") != string::npos ){
+		TF = 0;
+	}
+	if (statement.find("I am") != string::npos){
+		return  (TF == (species[character[speaker]].compare(lastWord) == 0 ));
+	}
+	else if(statement.find("It is") != string::npos ){
+		isThereHuman = 1;
+		return ( TF == ( sky[time].compare(lastWord) == 0 )  );
+	}
+	else{
+		int subject = ( statement[3] - 'A' );
+		if ( lastWord.compare("lying") == 0 ){
+			return (TF == (species[character[subject]].compare("evil") == 0
+							|| species[character[subject]].compare("human") == 0
+							&& time == 1) );
+		}
+		else
+			return (TF == (species[character[subject]].compare(lastWord) == 0 ) );
+	}
+	return 1;
+}
+
+bool judge(int time, int A, int B, int C, int D, int E){
+	int character[5] = {A,B,C,D,E};
+	bool mentioned[5] = {0,0,0,0,0};
+	for (int i = 0; i < n; i++){
+		if (sentence[i].substr(3).compare("I am lying.") == 0)
+			return 0;
+		bool TF = 1;
+		int speaker = sentence[i][0] - 'A';
+		mentioned[speaker] = 1;
+		if (character[speaker] == 1 || character[speaker] == 2 && time ==1){
+			TF = 0;
+		}
+		bool answ = ( TF == judgeStatement(speaker,character,time,sentence[i]) );
+		if (answ == 0) 
+			return 0;
+	}
+	ans[0] = time;
+	for (int i = 0; i < 5; i++){
+		if ( mentioned[i] )
+			ans[i+1] = character[i];
+		else 
+			ans[i+1] = -1;
+	}
+	for (int i = 1; i <= 5; i++){
+		if (ans[i] != possib[i])
+			goto here;
+	}	
+	return 0;
+here:
+	for (int i = 0; i <=5; i++){
+		possib[i] = ans[i];
+	}
+	return 1;
+}
+
+int main(){
+	freopen("file2.txt","r",stdin);
+	cin >> n;
+	cin.get();
+	int numConv = 1;
+	bool people[5];
+	while (n > 0){
+		memset(people,0,5);
+		isThereHuman = 0;
+		for (int i = 0; i < n; i++){
+			string line;
+			getline(cin,line);
+			sentence[i] = line;
+			if (!people[line[0] - 'A']) 
+				people[line[0] - 'A'] = 1;
+		}
+	int peopleNum = 0;
+	for (int i = 0; i < 5; i++)
+		peopleNum += people[i];
+		int remainPoss = 0;
+		for(int time = 0; time < 2; time++)//time = 0 means day,time =1 means night
+			for (int A = 0; A < 3; A++)//for A,B,C,D,E 0 means devine, 1 means evil, 2 means human
+				for (int B = 0; B < 3; B++)
+					for (int C = 0; C < 3; C++)
+						for (int D = 0; D < 3; D++)
+							for (int E = 0; E < 3; E++)
+							{
+								remainPoss += judge(time,A,B,C,D,E);
+								if (remainPoss > 1)
+									goto stop;
+							}
+stop:
+
+		cout <<"Conversation #"<< numConv << endl;
+		if (remainPoss == 0)
+			cout << "This is impossible." << endl;
+		else if(remainPoss == 2)
+			cout << "No facts are deducible." << endl;
+		else {
+			for (int i = 0; i < 5; i++){
+				if ( people[i] )
+					cout << (char)('A' + i) << " is " << species[possib[i + 1]] << "." << endl;
+				if ( people[i] && possib[i+1] == 2 )
+					isThereHuman = 1;
+			}
+			if (isThereHuman)
+				cout << "It is " << sky[possib[0]]  << "." << endl;
+		}
+		cout << endl;
+		cin >>n;
+		cin.get();
+		numConv ++;
+	}
+
+	return 0;
+}
