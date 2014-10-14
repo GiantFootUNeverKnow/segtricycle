@@ -1,0 +1,45 @@
+#include <iostream>
+#include <stdio.h>
+
+using namespace std;
+
+int cost[52][52];
+int a[52];
+int I,n;
+
+int main(){
+	//freopen("file.txt","r",stdin);
+	cin >> I;
+	for (int i = 0; i <52; i++){
+		for (int j = 0; j < 52; j++){
+			cost[i][j] = 0;
+		}
+	}
+	while (I){
+		cin >> n;
+		a[0] = 0;
+		int S;
+		a[n+1] = I;
+		for (int i = 1; i <=n; i++){
+			cin >> a[i];
+			cost[i-1][i] = 0;
+		}
+		for (int i = 1; i <= n;i++){
+			cost[i-1][i+1] = a[i+1] -a[i-1];
+		}
+		for (int len = 3; len <= n + 1; len++){
+			for (int str = 0; str + len <= n+1; str++){
+				cost[str][str+len] = INT_MAX;
+				S = a[str+len] - a[str];
+				for (int i = str+1; i < str + len; i++){
+					if (cost[str][i] + cost[i][str+len] < cost[str][str+len])
+						cost[str][str+len] = cost[str][i] + cost[i][str+len];
+				}
+				cost[str][str+len] += S; 
+			}
+		}
+		cout << "The minimum cutting is "<< cost[0][n+1] << '.' << endl;
+		cin >>I;
+	}
+	return 0;
+}
