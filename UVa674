@@ -1,0 +1,91 @@
+#include <iostream>
+#include <string>
+#include <stdio.h>
+
+using namespace std;
+
+int f[8000];//record the number of ways to count changes
+int a[8000];//record the number of ways to count changes only using 5cents and 1 cents
+int b[8000];//record the number of ways to count changes only using 10cents, 5cents and 1 cent
+int c[8000];//record the number of ways to count changes only using 25cents, 10cents, 5cents and 1cent
+int d[8000];//record the number of ways to count having used 50 cents
+
+int changeB(int Q){
+	if (b[Q] > 0)
+		return b[Q];
+	b[Q] = Q /10;
+	for (int j = 1; j <= Q / 10; j++){
+			int k = Q - 10 * j;
+			if (a[k] <= 0)
+				a[k] = k / 5;
+			b[Q] += a[k];
+		}
+	return b[Q];
+}
+
+int changeC(int Q){
+	if (c[Q] > 0)
+		return c[Q];
+	c[Q] = Q / 25;
+	for (int j = 1; j <= Q / 25; j++){
+			int k = Q - 25 * j;
+			if (b[k] <= 0)
+				b[k] = changeB(k);
+			if (a[k] <= 0)
+				a[k] = k / 5;
+			c[Q] += b[k] + a[k];
+		}
+	return c[Q];
+}
+
+int changeD(int Q){
+	if (d[Q] > 0)
+		return d[Q];
+	d[Q] = Q / 50;
+	for (int j = 1; j <= Q / 50; j++){
+			int k = Q - 50 * j;
+			if (c[k] <= 0)
+				c[k] = changeC(k);
+			if (b[k] <= 0)
+				b[k] = changeB(k);
+			if (a[k] <= 0)
+				a[k] = k / 5;
+			d[Q] += c[k] + b[k] + a[k];
+		}
+	return d[Q];
+}
+
+int change(int Q){
+	if (f[Q] > 0)
+		return f[Q];
+	if (Q % 5 == 0){
+		//f[Q] = 1;
+		a[Q] = Q / 5;
+		b[Q] = changeB(Q);
+		c[Q] = changeC(Q);
+		d[Q] = changeD(Q);
+		f[Q] = 1 + a[Q] + b[Q] + c[Q] + d[Q];
+ 	}
+	else 
+	{
+		f[Q] = change( Q - (Q % 5) );
+	}
+		return f[Q];
+}
+
+void init(){
+	for (int i = 0; i < 8000; i++){
+		f[i] = a[i] = b[i] = c[i] = d[i] = -1;
+	}
+	f[0] = 0;
+}
+
+int main(){
+	//freopen("file.txt","r",stdin);
+	init();
+	int money;	
+	while (cin >> money){
+		cout << change(money) << endl;
+	}
+	return 0;
+} 
