@@ -1,0 +1,32 @@
+#include <iostream>
+#include <stdio.h>
+#include <string>
+
+using namespace std;
+
+int f[1001][1001];
+
+int main(){
+	string a,b;
+	//freopen("file.txt","r",stdin);
+	for (int i= 0; i < 1001; i++){
+		f[0][i] = 0;
+		f[i][0] = 0;
+	}
+	while (getline(cin,a,'\n')){
+		getline(cin,b,'\n');
+		int aLen = a.size();
+		int bLen = b.size();
+		for (int i = 0; i < aLen; i++){
+			for (int j = 0; j < bLen; j++){
+				if (a[i] == b[j])
+					f[i+1][j+1] = f[i][j] + 1;//f array is 1-base while a and b are 0-base
+				else 
+					f[i+1][j+1] = max(f[i][j+1],f[i+1][j]);
+			}
+		}
+		cout << f[aLen][bLen] << endl;
+	}
+
+	return 0;
+}
