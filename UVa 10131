@@ -1,0 +1,77 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <vector>
+#include <stdio.h>
+#include <utility>
+
+using namespace std;
+
+typedef vector<int> VI;
+typedef pair<int,int> PII;
+typedef vector<PII> VPII;
+
+VI smartWithNum;
+VPII weightWithNum;
+VI smart;
+VI wanted;
+VI prevs;
+//vector<int> number;
+
+bool myCmp(pair<int,int>a1,pair<int,int>a2){
+	return (a1.first < a2.first);
+}
+
+/*
+
+*/
+int main(){
+	freopen("file.txt","r",stdin);
+	int cat,dog;
+	int i = 0;
+	while (cin >> cat >> dog){
+		weightWithNum.push_back(make_pair(cat,i));
+		smart.push_back(dog);
+		i++;
+	}
+	sort(weightWithNum.begin(),weightWithNum.end(),myCmp);
+	for (int i = 0; i < weightWithNum.size(); i++){
+		smartWithNum.push_back(smart[weightWithNum[i].second]);
+	}
+	int TotalMax = -1;
+	int TotalWhich = -1;
+	wanted.clear();
+	wanted.push_back(1);
+	prevs.clear();
+	prevs.push_back(-1);
+	for (int i = 1; i <smartWithNum.size(); i++){
+		int maxLen = 0;
+		int which = -1;
+		for (int j = 0;j < i ; j++){
+			if ( (smartWithNum[i] < smartWithNum[j]) && (weightWithNum[i].first != weightWithNum[j].first) && (wanted[j] > maxLen) )
+				{
+					maxLen = wanted[j];
+					which = j;
+			}
+		}
+		wanted.push_back(maxLen + 1);
+		prevs.push_back(which);
+		if (maxLen + 1 > TotalMax)
+		{
+			TotalMax = maxLen + 1;
+			TotalWhich = i;
+		}
+	}
+	cout << TotalMax << endl;
+	VI stack;
+	while (TotalWhich != -1){
+		stack.push_back(weightWithNum[TotalWhich].second);
+		TotalWhich = prevs[TotalWhich];
+	}
+	while(!stack.empty())
+	{
+		cout << stack[stack.size()-1] + 1 << endl;
+		stack.pop_back();
+	}
+	return 0;
+}
