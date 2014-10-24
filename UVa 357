@@ -11,7 +11,7 @@ int b[30000];//record the number of ways to count changes only using 10cents, 5c
 int c[30000];//record the number of ways to count changes only using 25cents, 10cents, 5cents and 1cent
 int d[30000];//record the number of ways to count having used 50 cents
 
-//The whole thing is but a copy of UVa648
+//The whole thing is but a copy of UVa674
 
 int changeB(int Q){
 	if (b[Q] > 0)
