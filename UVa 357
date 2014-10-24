@@ -5,15 +5,15 @@
 
 using namespace std;
 
-int f[30000];//record the number of ways to count changes
-int a[30000];//record the number of ways to count changes only using 5cents and 1 cents
-int b[30000];//record the number of ways to count changes only using 10cents, 5cents and 1 cent
-int c[30000];//record the number of ways to count changes only using 25cents, 10cents, 5cents and 1cent
-int d[30000];//record the number of ways to count having used 50 cents
+long long f[30000];//record the number of ways to count changes
+long long a[30000];//record the number of ways to count changes only using 5cents and 1 cents
+long long b[30000];//record the number of ways to count changes only using 10cents, 5cents and 1 cent
+long long c[30000];//record the number of ways to count changes only using 25cents, 10cents, 5cents and 1cent
+long long d[30000];//record the number of ways to count having used 50 cents
 
 //The whole thing is but a copy of UVa674
 
-int changeB(int Q){
+long long changeB(int Q){
 	if (b[Q] > 0)
 		return b[Q];
 	b[Q] = Q /10;
@@ -26,7 +26,7 @@ int changeB(int Q){
 	return b[Q];
 }
 
-int changeC(int Q){
+long long changeC(int Q){
 	if (c[Q] > 0)
 		return c[Q];
 	c[Q] = Q / 25;
@@ -41,7 +41,7 @@ int changeC(int Q){
 	return c[Q];
 }
 
-int changeD(int Q){
+long long changeD(int Q){
 	if (d[Q] > 0)
 		return d[Q];
 	d[Q] = Q / 50;
@@ -58,7 +58,7 @@ int changeD(int Q){
 	return d[Q];
 }
 
-int change(int Q){
+long long change(int Q){
 	if (f[Q] > 0)
 		return f[Q];
 	if (Q % 5 == 0){
@@ -84,7 +84,7 @@ void init(){
 }
 
 int main(){
-	freopen("file.txt","r",stdin);
+	//freopen("file.txt","r",stdin);
 	init();
 	int money;	
 	while (cin >> money){
