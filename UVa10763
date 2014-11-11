@@ -1,0 +1,41 @@
+#include <iostream>
+#include <stdio.h>
+#include <vector>
+#include <string>
+#include <map>
+#include <utility>
+using namespace std;
+
+typedef pair<int , int> PII;
+
+int main(){
+	freopen("file.txt","r",stdin);
+	int n;
+	cin >> n;
+	int cat1,cat2;
+	map<PII,int> book;
+	while(n != 0){
+		book.clear();
+		for (int i = 0; i < n;i++){
+			cin >> cat1 >> cat2;
+			PII cats = make_pair(cat1,cat2);
+			PII inverse_cats = make_pair(cat2,cat1);
+			if (book.find(inverse_cats) == book.end() && book.find(cats) == book.end() )
+				book.insert(make_pair(cats, 1) );
+			else if (book.find(inverse_cats) != book.end() ){
+				book[inverse_cats] --;
+				if (book[inverse_cats] == 0)
+					book.erase(inverse_cats);
+			}
+			else if (book.find(cats) != book.end() )
+				book[cats] ++;
+			//Physics shows that it is impossible to be that both cats and inverse_cats exist in a same universe
+		}
+		if (book.size() == 0)
+			cout << "YES" <<endl;
+		else 
+			cout << "NO" << endl;
+		cin >> n;
+	}
+	return 0;
+}
