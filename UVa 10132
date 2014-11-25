@@ -1,0 +1,149 @@
+#include <vector>
+#include <iostream>
+#include <stdio.h>
+#include <string>
+
+using namespace std;
+
+typedef vector< vector<string> > VVS;
+
+int main(){
+	//freopen("file.txt","r",stdin);
+	int tcase;
+	string tmp;
+	cin >> tcase;
+	cin.get();
+	getline(cin,tmp);
+	int n;
+	VVS squids;//only squids could pick up so many pieces of fragments so quickly
+	while (tcase--){
+		squids.clear();
+		int count[256];
+		for (int i = 0; i < 256; i++){
+			vector<string> p;
+			squids.push_back(p);
+			count[i] = 0;
+			//cout << i << endl;
+		}
+		getline(cin,tmp);
+		//while (tmp.length() != 0/*tmp.compare("\n") != 0*/){
+		do{
+			int ls = tmp.length();
+			if (count[ls - 1] == 0){
+				squids[ls-1].push_back(tmp);
+				count[ls - 1]++;
+			}
+			else if (count[ls - 1] == 1)
+				{
+					if (squids[ls -1][0].compare(tmp) != 0 ){
+						squids[ls-1].push_back(tmp);
+					count[ls - 1]++;
+					}
+				}				
+			if (! getline(cin,tmp) )
+				break;
+		}while(tmp.length() != 0);
+		//troublesome input
+		int avgLen = 0;
+		int llim = 0;
+		int rlim = 0;
+		for (int i = 0; i < 256; i++)
+			if (count[i] != 0){
+				avgLen += (i + 1);
+				llim = i;
+				break;		
+			}
+		for (int i = 255; i >= 0; i--)
+			if (count[i] != 0){
+				avgLen += (i + 1);
+				rlim = i;
+				break;
+			}
+		for (int i = llim; i <= rlim; i++){
+			if (count[i] == 1 && count[avgLen - 2 - i] == 2){
+				count[i]++;
+				squids[i].push_back(squids[i][0]);
+			}
+		}		
+		//prosessing structure
+		string choice[4];
+		bool stillTrue[4];
+		stillTrue[0] = stillTrue[1] = stillTrue[2] = stillTrue[3] = 1;
+		if (count[llim] == 1 /*count[rlim] is also supposed to be 1*/){
+			//choice = new string[2];
+			//choice = {squids[llim][0] + squids[rlim][1], squids[rlim][0] + squids[llim][1]};
+			choice[0] = squids[llim][0] + squids[rlim][0];
+			choice[1] = squids[rlim][0] + squids[llim][0];
+			stillTrue[2] = stillTrue[3] = 0;
+		}
+		else//count[llim] == 2
+		{
+			if ((squids[llim][0] + squids[rlim][0]).compare( squids[rlim][1] + squids[llim][1]) == 0)
+				choice[0] =squids[llim][0] + squids[rlim][0];
+			else stillTrue[0] = 0;
+			if ( (squids[llim][0] + squids[rlim][1] ).compare( squids[rlim][0] + squids[llim][1]  ) == 0 ) 
+				choice[1] = squids[llim][0] + squids[rlim][1];
+			else stillTrue[1] = 0;
+			if ( (squids[llim][1] + squids[rlim][0]).compare(squids[rlim][1] + squids[llim][0] ) == 0 )
+				choice[2] = squids[llim][1] + squids[rlim][0];
+			else stillTrue[2] = 0;
+			if ( (squids[llim][1] + squids[rlim][1]).compare(squids[rlim][0] + squids[llim][0]) == 0 )
+				choice[3] = squids[llim][1] + squids[rlim][1];
+			else stillTrue[3] = 0;
+		}
+		for (int i = llim + 1; i <= avgLen / 2; i++){
+			if (count[i] == 0) continue;
+			string pf1,pf2,pf3,pf4;//short for possible formations
+			if (count[i] == 1)
+			{
+				//some logics to be filled in
+				pf1 = squids[i][0] + squids[avgLen - 2 - i][0];
+				pf2 = squids[avgLen - 2 - i][0] + squids[i][0];
+				pf3 = pf4 = " ";
+			}
+			if (count[i] == 2)
+			{
+				//some logics to be filled in
+				string pf1_1 = squids[i][0] + squids[avgLen - 2 - i][0];
+				string pf1_2 = squids[avgLen - 2 - i][1] + squids[i][1];
+				string pf2_1 = squids[i][1] + squids[avgLen - 2 - i][0];
+				string pf2_2 = squids[avgLen - 2 - i][1] + squids[i][0];
+				string pf3_1 = squids[i][0] + squids[avgLen - 2 - i][1];
+				string pf3_2 = squids[avgLen - 2 - i][0] + squids[i][1];
+				string pf4_1 = squids[i][1] + squids[avgLen - 2 - i][1];
+				string pf4_2 = squids[avgLen - 2 - i][0] + squids[i][0];
+				if (pf1_1.compare(pf1_2) == 0)
+					pf1 = pf1_1; 
+				else pf1 = " ";
+				if (pf2_1.compare(pf2_2) == 0)
+					pf2 = pf2_2;
+				else pf2 = " ";
+				if (pf3_1.compare(pf3_2) == 0)
+					pf3 = pf3_1;
+				else pf3 = " ";
+				if (pf4_1.compare(pf4_2) == 0)
+					pf4 = pf4_2;
+				else pf4 = " ";
+			}
+			for (int j = 0; j < 4; j++){
+				if (stillTrue[j] &&  pf1.compare(choice[j]) != 0 && pf2.compare(choice[j]) != 0 && pf3.compare(choice[j]) != 0 && pf4.compare(choice[j]) != 0){
+					stillTrue[j] = 0;
+				}
+			}
+				/*if (stillTrue[1] && pf1.compare(choice[1]) != 0 && pf2.compare(choice[1]) != 0){
+					stillTrue[1] = 0;
+				}*/
+		}
+		if (stillTrue[0] )
+			cout << choice[0] << endl;
+		else if (stillTrue[1])
+			cout << choice[1] << endl;
+		else if (stillTrue[2])
+			cout << choice[2] << endl;
+		else if (stillTrue[3])
+			cout << choice[3] << endl;
+		else cout << "Fucked" << endl;
+		if (tcase != 0) cout << endl;
+	}
+	return 0;	
+}
