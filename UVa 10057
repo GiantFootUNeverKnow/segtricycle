@@ -1,0 +1,54 @@
+#include <iostream>
+#include <vector>
+#include <stdio.h>
+
+using namespace std;
+
+int main(){
+	//freopen("file.txt","r",stdin);
+
+	int n;
+	int buckets[65536];
+	while (cin >> n){
+		int cat;
+		for(int i = 0; i < 65536; i++) buckets[i] = 0;
+		for (int i = 0; i < n; i++){
+			cin >> cat;
+			buckets[cat]++;	
+		}
+		int direv = -1 * n;//direvative of f[a]
+		int startOfAns,EndOfAns;
+		for (int i = 0; i < 65536; i++){
+			if (buckets[i] > 0)
+			{
+				//int tmp = direv;
+				direv += buckets[i] * 2;
+				if (direv > 0)
+				{
+					startOfAns = EndOfAns = i;					
+					goto report;
+				}
+				else if (direv == 0){
+					startOfAns = EndOfAns = i;
+					for (int j = i + 1; j < 65536; j++)
+						if (buckets[j] > 0)
+						{
+							EndOfAns = j;
+							goto  report;
+						}
+					goto report;
+				}
+			}
+		}
+		//calculate
+		report:
+			if (EndOfAns == startOfAns){
+				cout << EndOfAns<< " " << buckets[EndOfAns] << " "  << 1 << endl;
+			}
+			else {
+				cout << startOfAns << " " << buckets[startOfAns] + buckets[EndOfAns] << " " << EndOfAns - startOfAns + 1 << endl;
+			}
+		//output
+	}
+	return 0;
+}
