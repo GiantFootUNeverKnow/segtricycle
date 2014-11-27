@@ -1,0 +1,28 @@
+#include <string>
+#include <iostream>
+#include <stdio.h>
+
+using namespace std;
+
+int main(){
+	//freopen("file.txt","r",stdin);
+	string s,t;
+	while (cin >> s >> t){
+		string changedT = t;
+		size_t found = changedT.find_first_of(s.substr(0,1));
+		if (found != string::npos)
+			for (int i = 1; i < s.size(); i++){
+				found = changedT.find_first_of(s.substr(i,1),found + 1);
+				if (found == string::npos)
+					goto here;
+			}
+		else
+			{
+				here:
+					cout << "No" << endl;
+				continue;
+			}	
+		cout << "Yes" << endl;
+	}
+	return 0;
+}
