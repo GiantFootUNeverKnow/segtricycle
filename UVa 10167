@@ -1,0 +1,79 @@
+#include <iostream>
+#include <stdio.h>
+#include <utility>
+
+using namespace std;
+
+int main(){
+	//freopen("file.txt","r",stdin);
+	int N;
+	pair< int, int > cherries[100];
+	cin >> N;
+	int cat,dog;
+	int A,B;
+	while (N != 0){
+		for (int i= 0; i < 2*N; i++)
+		{
+			cin >>cat >>dog;
+			cherries[i] = make_pair(cat,dog);
+		}
+		////////////////////////////////////////////////readin
+		int right,left,up,down;
+		right = left = up = down = 0;
+		for (int i = 0; i < 2*N; i ++){
+			if (cherries[i].first > 0) right ++;
+			if (cherries[i].first < 0) left ++;
+			if (cherries[i].second > 0) up ++;
+			if (cherries[i].second < 0) down ++;
+			//else if (cherries[i].second < 0) down ++;
+		}
+		if (right == N && left == N)
+		{
+			A = 1;
+			B = 0;
+		}
+		else if (up == N && down == N)
+		{
+			A = 0;
+			B = 1;
+		}
+		////////////////////////////////////////////////special case
+		else 
+		for (int a = 1; a < 500; a++)
+			for (int b = 1; b < 500; b++)
+			{
+				right = left = up = down = 0;
+				for (int i = 0; i < 2* N; i++){
+					if (a * cherries[i].first + b * cherries[i].second > 0)
+						right++;
+					else if (a * cherries[i].first + b * cherries[i].second < 0)
+						left++;
+					if (a * cherries[i].first - b * cherries[i].second > 0)
+						up ++;
+					else if (a * cherries[i].first - b * cherries[i].second < 0)
+						down ++;
+				}
+				if (right == N && left == N)
+				{
+					A = a;
+					B = b;
+					goto stop;
+					//break;
+				}
+				if (up == N && down == N)
+				{
+					A = a;
+					B = (-1) * b;
+					goto stop;
+					//break;
+				}
+			}
+		stop:
+		////////////////////////////////////////////////brute force
+		cin >> N;
+		cout << A << " " << B << endl;
+		//if (N != 0)
+			//cout << endl;
+	}
+	return 0;
+}
