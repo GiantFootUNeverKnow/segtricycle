@@ -1,0 +1,18 @@
+		for (int j = 0; j < timesi; j++){
+			if (num1[times[j]] != num[times[j]])
+				continue;
+			long long partPro = num1[times[j]] * num1[times[j] + 1];
+			int k = j;
+			while (times[k+1] - times[k] == 1){
+				k++;
+				partPro *= num1[times[k] + 1];
+			}
+			num1[times[k] + 1] = 0;
+			while (k > j)
+				num1[times[k--]] = 0;
+			num1[times[j]] = partPro;
+		}
+		long long mini = 0;
+		for (int j = 0; j < 20; j ++) mini += num1[j];//{mini += num1[j]; cout << " " << num1[j];}
+		cout << mini << endl;
+		//calculate minimum
