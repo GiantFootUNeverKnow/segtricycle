@@ -1,0 +1,49 @@
+#include <iostream>
+#include <vector>
+#include <stdio.h>
+#include <algorithm>
+#include <utility>
+
+using namespace std;
+
+class job{
+        public :
+                int index;
+                int fine;
+                int days;
+                job(int a, int b, int c){
+                        index = a;
+                        days = b;
+                        fine = c;
+                }
+};
+
+bool cmp(job a,job b){
+	return ( (a.days * b.fine < a.fine * b.days) || ( (a.days * b.fine == a.fine * b.days )&& (a.index < b.index) ));
+}
+
+int main(){
+    //    freopen("file.txt","r",stdin);
+	int tcase;
+	int n;
+	cin >> tcase;
+	vector<job> shoemaker;
+	while (tcase--){
+		cin >> n;
+		shoemaker.clear();
+		int s,t;
+		for (int i = 0; i < n; i++)
+		{
+			cin >> t >>s;
+			job a(i+1,t,s);		
+			shoemaker.push_back(a);
+		}
+		sort(shoemaker.begin(),shoemaker.end(),cmp);
+		for (int i = 0; i < n - 1; i++){
+			cout << shoemaker[i].index << " ";
+		}
+		cout << shoemaker[n-1].index << endl;
+		if (tcase) cout << endl;
+	}
+        return 0;
+}
