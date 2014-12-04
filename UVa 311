@@ -1,0 +1,80 @@
+#include <vector>
+#include <iostream>
+#include <stdio.h>
+#include <string.h>
+
+using namespace std;
+
+int main(){
+	//freopen("file.txt","r",stdin);
+	int cat1,cat2,cat3,cat4,cat5,cat6;
+	cin >> cat1 >> cat2 >> cat3 >> cat4 >> cat5 >> cat6;
+	while (cat1 + cat2 + cat3 + cat4 + cat5 + cat6 != 0){
+		vector<int> parcel;
+		parcel.push_back(0);
+		for (int i = 1; i <= 6;i++){
+			parcel.push_back(0);
+		} 
+		parcel[6] += cat6;
+		parcel[5] += cat5;
+		parcel[4] += cat4;
+		int sqa5 = cat5 * 11;//the wasted space caused by 5*5 size packets
+		int sqa4 = cat4 * 20;//the wasted space caused by 4*4 size packets
+		while (cat3 >= 4)
+			{
+				cat3 -= 4;
+				parcel[3] ++; 
+			}
+		int sqa3 =0;//the wasted space caused by 3 * 3 size packets
+		if (cat3 > 0)
+			{
+				parcel[3]++;
+				sqa3 = 36 - cat3 * 9;
+			}
+		for (int j = parcel[4]; j > 0; j--){
+			if (cat2 <= 0)
+				break;
+			if (cat2 > 5)
+				{
+					cat2 -= 5;
+					sqa4 -= 20;
+				}
+			else {
+				sqa4 -= cat2 * 4;
+				cat2 = 0; 
+			}
+		}
+		if (cat2 > 0 && sqa3 > 0){
+			if (sqa3 == 27)	{
+					sqa3 -= min(5,cat2) * 4;
+					cat2 -= 5;
+				}
+			else if (sqa3 == 18){
+					sqa3 -= min(3,cat2) * 4;
+					cat2 -= 3;
+				}
+			else if (sqa3 == 9){
+					sqa3 -= 4;
+					cat2 -= 1;
+				}
+		}
+		while (cat2 >= 9){
+			parcel[2] ++;
+			cat2 -= 9;	
+		}
+		int sqa2 = 0;
+		if (cat2 > 0){
+			parcel[2] ++;
+			sqa2 = 36 - cat2 * 4;
+		}
+		cat1 -= sqa2 + sqa3 + sqa4 + sqa5;
+		while (cat1 > 0)
+			{
+				parcel[1] ++;
+				cat1 -= 36; 
+			}
+		cout << parcel[1] + parcel[2] + parcel[3] + parcel[4] + parcel[5] + parcel[6] << endl;
+		cin >> cat1 >> cat2 >> cat3 >> cat4 >> cat5 >> cat6;
+	}
+	return 0;
+}
