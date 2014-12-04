@@ -34,7 +34,7 @@ int main(){
 						break;//this segment cannot update any point after checkPos 
 					}
 				}
-				i++;
+				i++;  
 			}
 			cin >> l >> r;
 		}
