@@ -1,0 +1,66 @@
+#include <vector>
+#include <iostream>
+#include <stdio.h>
+
+using namespace std;
+typedef vector<int> VI;
+
+int main(){
+	//freopen("file.txt","r",stdin);
+	int tcase;
+	cin >>tcase;
+	int m;
+	while (tcase--){
+		cin >> m;
+		VI shipment;//record the segment index of the segment whose right reach is the rightest among all segments covering point i
+		for (int i = 0; i <= m; i ++){
+			shipment.push_back(-1);
+		}
+		int l,r;
+		VI leftN, rightN;
+		cin >> l >> r;
+		int i = 0;
+		while (! ( (l == 0) && (r == 0) ) ){
+			if (l < m && r > 0){
+				leftN.push_back(l);
+				rightN.push_back(r);
+				int checkPos = max(l,0);
+				while (checkPos < min(r,m) ){
+					if (shipment[checkPos] == -1 ||  rightN[shipment[checkPos]] < r){
+							shipment[checkPos] = i;//update a point, now segment i is the one reach furthest for point checkPos
+							checkPos ++;
+						} 
+					else{
+						break;//this segment cannot update any point after checkPos 
+					}
+				}
+				i++;
+			}
+			cin >> l >> r;
+		}
+		// read in
+		int sum = 0;
+		int Left = 0;
+		int ifFail = 0;
+		VI output;//record the index of segments that needs outputting
+		while (Left < m){
+			if (shipment[Left] == -1){
+				ifFail = 1;
+				break;
+			}
+			output.push_back(shipment[Left]);
+			sum++;
+			Left = rightN[shipment[Left]];
+		}
+		if (ifFail)
+			cout << 0 << endl;
+		else {
+			cout << sum << endl;
+			for (int i = 0; i < output.size(); i++)
+				cout << leftN[output[i]] << " " << rightN[output[i]] << endl;
+		}
+		if (tcase)cout << endl;
+	}
+
+	return 0;
+}
