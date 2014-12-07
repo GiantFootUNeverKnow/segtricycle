@@ -1,0 +1,32 @@
+#include <queue>
+#include <iostream>
+#include <stdio.h>
+
+using namespace std;
+
+int main(){
+	//freopen("file.txt","r",stdin);
+	int n;
+	cin >>n;
+	while(n){
+		priority_queue<long long, vector<long long>,greater<long long> >  q;
+		long long cat;
+		long long cost = 0;
+		for (int i = 0 ; i < n; i++){
+			cin >> cat;
+			q.push(cat);
+		}
+		while (q.size() > 1){
+			int a = q.top();
+			q.pop();
+			int b = q.top();
+			q.pop();
+			q.push(a + b);
+			cost += (a + b);
+			//cout << cost << " " << endl;
+		}
+		cout << cost << endl;
+		cin >> n;
+	}
+	return 0;
+}
