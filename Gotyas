@@ -1,0 +1,8 @@
+## From UVA 10400, I know that sometimes DFS can outrun BFS greatly because you don't need travel through all possibilities in some
+## situations. When DFS reaches one of the solutions, it can terminate immediately while BFS has to spend long long time searching 
+## no single solution.
+## Also, from UVA 10400, I used repetitive trimming to speed up DFS. You record some states you have searched and skip that state whenever 
+## you meet it again.
+
+##From UVA 714, which I didn't AC, I learned a way to figure out the Least Largest Element problem --- Binary Search!
+##,though it is not a key to all similar problems...
