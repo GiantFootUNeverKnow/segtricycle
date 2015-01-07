@@ -1,0 +1,118 @@
+#include <iostream>
+#include <stdio.h>
+#include <vector>
+
+using namespace std;
+
+vector<long long int> books;
+int m,k;
+
+bool judge(long long int G){
+	int p = m-1;
+	int g = G;
+	for (int i = k-1; i > 0; i--){
+		int smallScriber = 0;
+		for (int j = p; j >= 0; j--){
+			if (smallScriber + books[j] <= g && i <= j ) 
+				smallScriber += books[j];
+			else {
+				p = j;
+				break;
+			}
+		}
+	//	if (p < 0)
+	//		return true;
+	}
+	//scribe k-1 piles of work to k-1 scribers
+	int firstScriber = 0; 
+	for (int i = 0; i <= p; i++){
+		firstScriber += books[i];
+	}
+	if (firstScriber > g)
+		return false;
+	else return true;
+	//the last one assigned to the first scriber
+	//return false;
+}
+
+void printy(long long int G){
+	vector< vector<long long int> > sheet;
+	for (int i = 0; i < k; i++){
+		vector<long long int> tmp;
+		sheet.push_back(tmp);
+	}
+        int p = m-1;
+        int g = G;
+        for (int i = k-1; i > 0; i--){
+                int smallScriber = 0;
+                for (int j = p; j >= 0; j--){
+                        if (smallScriber + books[j] <= g && i <= j  )
+                        {
+				smallScriber += books[j];
+                		sheet[i].push_back(books[j]);
+			}
+		        else {
+                                p = j;
+                                break;
+                        }
+                }
+              //  if (p < 0)
+                //        return true;
+        }
+	for (int i = p; i >= 0; i--){
+		sheet[0].push_back(books[i]);
+	}
+	for (int i = 0; i < k; i++){
+		//for (int j = 0; j < sheet[i].size(); j++){
+		//	cout << sheet[i][j] << " ";
+		//}
+		while ( !sheet[i].empty() ){
+			cout << sheet[i].back();
+			sheet[i].pop_back();
+			if (!sheet[i].empty())
+				cout << " ";
+		}
+		if (i == k-1)
+			cout << endl;
+		else  cout << " / ";
+		//	cout << " / ";
+	}
+}
+
+int main(){
+	freopen("file.txt","r",stdin);
+	int tcase;
+	cin >> tcase;
+	while (tcase--){
+		//int m, k;
+		cin >> m >> k;
+		books.clear();
+		//int books[m];
+		long long int cat;
+		for (int i = 0; i < m; i++){
+			cin >> cat; 
+			books.push_back(cat);
+		}
+		//end of input
+		/*for (int i = 0; i < m; i++){
+			cout << books[i] << " ";
+		}
+		cout << endl;*/
+		//testing 
+		long long int l = 1;
+		long long int r = 10000000;
+		while (l<r){
+			long long int mid = (l + r)/2;
+			if (judge(mid))
+				r = mid;
+			else l = mid + 1;
+		}
+		//binary search
+		//cout << " "<< l << " " << m << endl;
+		printy(l);
+		//if (tcase)
+		//	cout << endl;
+		//output
+	}
+	return 0;
+}
