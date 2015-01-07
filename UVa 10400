@@ -1,0 +1,92 @@
+#include <vector>
+#include <map>
+#include <set>
+#include <iostream>
+#include <stdio.h>
+#include <string>
+
+using namespace std;
+
+#define MAXI 64001
+int n;
+vector< int > numbers;
+//set< int > states;
+int result;
+//map<int, string> express; 
+int isVisited[101][MAXI];
+
+bool think(int nownumb,int turn,string &nowEx){
+	if (turn == n)
+		return (nownumb == result);
+	if (isVisited[turn][nownumb+32000])
+		return false;
+	int nextnumb = numbers[turn];
+	int nResult1 = nownumb + nextnumb;
+	int nResult2 = nownumb - nextnumb;
+	int nResult3 = nownumb * nextnumb;
+	bool l1,l2,l3;
+	if (nResult1 >= -32000 && nResult1 <= 32000){
+		 string p = nowEx + "+" + to_string(nextnumb); 
+		 l1 = think(nResult1,turn+1,p);
+		 if (l1){
+			nowEx = p;
+			return true;
+		}
+	}
+        if (nResult2 >= -32000 && nResult2 <= 32000){
+                 string p = nowEx + "-" + to_string(nextnumb);
+                 l2 = think(nResult2,turn+1,p);
+                 if (l2){
+                        nowEx = p;
+                        return true;
+                }
+        }
+        if (nResult3 >= -32000 && nResult3 <= 32000){
+                 string p = nowEx + "*" + to_string(nextnumb);
+                 l3 = think(nResult3,turn+1,p);
+                 if (l3){
+                        nowEx = p;
+                        return true;
+                }
+        }
+	if (nownumb % nextnumb == 0)
+		{
+		int nResult4 = nownumb / nextnumb;
+		string p = nowEx + "/" + to_string(nextnumb);
+		bool l4 = think(nResult4,turn+1,p);
+		if (l4){
+			nowEx = p;
+			return true;
+		}
+	}
+	isVisited[turn][nownumb+32000] = 1;
+	return false;
+}
+
+int main(){
+	//freopen("file.txt","r",stdin);
+	int tcase;
+	cin >> tcase;
+	while (tcase--){
+		cin >> n;
+		numbers.clear();
+		int cat;
+		for (int i = 0; i < n; i++){
+			cin >> cat;//cin >>numbers[]
+			numbers.push_back(cat);
+			for (int j = 0; j <MAXI; j++)
+				isVisited[i+1][j] = 0;
+		}
+		cin >> result;
+		string ans = to_string(numbers[0]);
+		bool succ = think(numbers[0],1,ans);	
+		//state calc
+		//if (states.find(result) == states.end())
+		if (!succ)
+			cout << "NO EXPRESSION" << endl;
+		else cout << ans << "=" << result << endl;
+		//else cout << express.find(* (states.find(result)) )->second << "=" << result << endl;	
+		//print out
+	}
+	return 0;
+}
