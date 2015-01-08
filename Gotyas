@@ -6,3 +6,11 @@
 
 ##From UVA 714, which I didn't AC, I learned a way to figure out the Least Largest Element problem --- Binary Search!
 ##,though it is not a key to all similar problems...
+
+##UVA 10055, the simplest problem, taught me some things, cost me three WA...
+##Always read the problem!
+##abs() is different in <cstdlib> and <cmath>. If you do with int, go with cstdlib, otherwise, cmath is your favorite
+
+##UVA 10718 is an awesome math problem. I already spent 2 hours coding the complicated bit operations, which I think there
+##should be some packages easier to use. But, important points have to be made: bit operation maybe have higher priority than
+##"==" or "!=". Be careful when doing comparison with bit operation. They cause unlimited problems
