@@ -1,0 +1,41 @@
+#include <iostream>
+#include <stdio.h>
+#include <string>
+#include <vector>
+#include <list>
+
+using namespace std;
+
+int main(){
+	//freopen("file.txt","r",stdin);
+	string s;
+	while (cin >> s){
+		list<string> sentence;
+		int lastfound = 0;
+		int sign = 1;//1 means this part of string is put front,-1 means put on the end
+		int found = s.find_first_of("[]");
+		while (found != string::npos){
+			string k = s.substr(lastfound,found-lastfound);	
+			if (sign == 1)
+				sentence.push_front(k);
+			else sentence.push_back(k);	
+			if (s[found] == '[')
+				sign = 1;
+			else sign = -1;
+			lastfound = found + 1;
+			found = s.find_first_of("[]",lastfound);
+		}
+		string k = s.substr(lastfound);
+		if (sign == 1)
+			sentence.push_front(k);
+		else sentence.push_back(k);
+		//prossessing
+		while (!sentence.empty()){
+			cout << sentence.front();
+			sentence.pop_front();
+		}
+		cout << endl;
+		//print out 
+	}
+	return 0;
+}
