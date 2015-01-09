@@ -14,3 +14,6 @@
 ##UVA 10718 is an awesome math problem. I already spent 2 hours coding the complicated bit operations, which I think there
 ##should be some packages easier to use. But, important points have to be made: bit operation maybe have higher priority than
 ##"==" or "!=". Be careful when doing comparison with bit operation. They cause unlimited problems
+
+##UVA 11988 is the first exercise of data structure and it shows me a convenient data structure -- list. It can support a 
+##front and back, push and pop, and anywhere modification/request. It just looks like a physical list.
