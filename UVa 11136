@@ -1,0 +1,35 @@
+#include <iostream>
+#include <stdio.h>
+#include <set>
+
+using namespace std;
+
+int main(){
+	//freopen("file.txt","r",stdin);
+	int days;
+	while (cin >> days){
+		if (days == 0)
+			break;
+		multiset<int> urn;
+		int k, cat, small, big;
+		multiset<int>::iterator it;
+		long long int sum = 0;
+		while (days--){
+			cin >> k;
+			while (k--){
+				cin >> cat;
+				urn.insert(cat);
+			}	
+			small = *(urn.begin());
+			big = *(urn.rbegin());
+			//cout << "big is " << big << " small is " << small << " size is "<< urn.size()  << endl;
+			sum += big - small;
+			urn.erase(urn.begin());
+			it  = urn.find(big);
+			urn.erase(it);
+		}
+		cout << sum << endl;
+	}
+
+	return 0;
+}
