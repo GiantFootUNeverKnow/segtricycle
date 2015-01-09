@@ -17,3 +17,12 @@
 
 ##UVA 11988 is the first exercise of data structure and it shows me a convenient data structure -- list. It can support a 
 ##front and back, push and pop, and anywhere modification/request. It just looks like a physical list.
+
+##UVA 11136. Data structure is really interesting. I discovered a new container in C++ ----multiset. Though its name is weird
+##its property i awesome. I basically treat it as binary search tree and it really is (at least in reference it is said to be 
+##implemented by BST). It is a useful structure. I don't know why they don't directly call it BST, instead name it multiset
+##Some places noteworthy and take me bunch of time to figure out: in C++ container, end() does not point to any thing...
+##end() is just a tool in combination of begin(). If you want to access the last element, use rbegin()!!
+##Careful about using erase() of multiset. Check first! Don't apply erase() on a position like erase(13). 
+##Don't erase("APPLE") if there is only one "APPLE" you really want to delete.
+##Use erase with iterators!
