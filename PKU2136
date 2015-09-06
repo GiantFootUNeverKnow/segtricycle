@@ -1,0 +1,48 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main(){
+//	freopen("in.txt", "r", stdin);
+	string sentence[4];
+	for (int i = 0; i < 4; i++){
+		string s;
+		getline(cin,s);
+		sentence[i] = s;
+	}
+	//read_in
+	int frequencies[26];
+	for (int i = 0; i < 26; i++)
+		frequencies[i]= 0;
+	//init
+	for (int i = 0; i < 4; i++)
+		for (int j = 0; j < sentence[i].size(); j++)
+			if ( (sentence[i][j] - 'A' >=0) && (sentence[i][j] - 'A' < 26 ))
+				frequencies[sentence[i][j] - 'A']++;
+	int maxFreq = 0;
+	for (int i = 0; i < 26; i++)
+		if (frequencies[i] > maxFreq){
+			maxFreq = frequencies[i];
+		}
+	//counting
+	for (int i = maxFreq; i>0; i--){
+		for (int j = 0; j < 26; j++){
+			if (frequencies[j] >= i)
+				cout << '*';
+			else 
+				cout << ' ';
+			if (j != 25)
+				cout << ' ';
+			else cout << endl;
+		}
+	}
+	for (int i = 0; i < 26; i++){
+		if (i != 25)
+			cout << (char)('A'+i) << ' ';
+		else
+			cout << (char)('A'+i);
+	}
+	//write_out
+	return 0;
+}
