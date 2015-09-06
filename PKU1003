@@ -1,0 +1,29 @@
+#include <iostream>
+
+using namespace std;
+
+double rH[301];
+
+int reverseHamonic(double a){
+	for (int i = 0; i < 301; i++){
+		if ( rH[i] == -1)
+			rH[i] = rH[i-1] + (1.0 / (i+1));
+		if ( rH[i] - a >= -0.00000001)
+			return i;
+	}
+}
+
+int main(){
+	//freopen("in.txt","r",stdin);
+	rH[0] = 0;
+	for (int i = 1; i < 301; i++)
+		rH[i] = -1;
+	double cat;
+	while (cin >> cat){
+		//	cout << cat << endl;
+			if (cat - 0 < 0.001)
+				break;
+			cout << reverseHamonic(cat) << " card(s)" << endl;
+		}
+	return 0;
+}
