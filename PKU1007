@@ -1,0 +1,41 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+string s[100];
+
+int unsortedness(string ss){
+	int ans = 0;
+	for (int i =0; i < ss.size(); i++)
+		for (int j = i+1; j < ss.size(); j++)
+			if (ss[i] > ss[j])
+				ans += 1;
+	return ans;
+}
+
+void swapS(int i, int j){
+	string temp = s[i];
+	s[i] = s[j];
+	s[j] = temp;
+}
+
+int main(){
+	//freopen("in.txt", "r", stdin);
+	int n, m;
+	cin >> n >> m;
+	for (int i = 0; i< m; i++){
+		cin >> s[i];
+	}
+	//read_in
+	for (int i = 0; i < m; i++)
+		for (int j = i+1; j < m; j++)
+			if (unsortedness(s[i]) > unsortedness(s[j]))
+				swapS(i,j);
+	//sorting
+	for (int i = 0; i < m; i++)
+		cout << s[i] << endl;
+	//write_out
+
+	return 0; 
+}
