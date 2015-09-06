@@ -1,0 +1,38 @@
+#include <iostream>
+#include <math.h>
+
+using namespace std;
+
+//test if number n could be decomposed into k consecutive numbers
+bool ifDecompose(long long int n, long long int k){
+	if (k % 2 == 0){
+		if ( (n + (k / 2)) % k == 0){
+			int p = (n + (k / 2)) / k;
+			if (p - (k/2) > 0)
+				return true;
+		}
+		return false;
+	}
+	else{
+		if (n % k == 0){
+			int p = n / k;
+			if (p - (k/2) > 0 )
+				return true;
+		}
+		return false;
+	}
+
+}
+
+int main(){
+	long long int n;
+	cin >>n;
+	//read_in
+	long long int count = 0;
+	for (int i = 1; i <= 2 * (int)sqrt(1.0*n); i++)
+		if ( ifDecompose(n,i) )
+			count++;
+	//calculation
+	cout << count << endl;
+	return 0;
+}
