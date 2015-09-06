@@ -1,0 +1,50 @@
+#include <string>
+#include <iostream>
+#include <sstream>
+#include <stdlib.h>
+
+using namespace std;
+
+string IntToString ( int number )
+{
+  std::ostringstream oss;
+
+  // Works just like cout
+  oss<< number;
+
+  // Return the underlying string
+  return oss.str();
+}
+
+//reverse the integer k
+int reverse(int k){
+	string sK = IntToString(k);
+
+	for (int i = 0; i < sK.size() / 2; i++){
+		char temp = sK[i];
+		sK[i] = sK[sK.size() - i - 1];
+		sK[sK.size() - i - 1] = temp;
+	}
+
+	int leadingZero = 0;
+	while (sK[leadingZero] == '0')
+		leadingZero++;
+
+	string reverseK = sK.substr(leadingZero);
+
+	return atoi(reverseK.c_str());
+
+}
+
+int main(){
+//	freopen("in.txt","r",stdin);
+	int n,a,b;
+	cin >> n;
+
+	for (int i = 0; i < n; i++){
+		cin >> a >> b;
+		cout << reverse(reverse(a) + reverse(b)) << endl;
+	}
+
+	return 0;
+}
