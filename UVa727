@@ -1,0 +1,111 @@
+#include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
+#include <vector>
+#include <map>
+#include <algorithm>
+#include <string>
+#include <stack>
+
+using namespace std;
+
+
+typedef struct _Node{
+	char c;
+	_Node * lChild;
+	_Node * rChild;
+
+	_Node(char x){
+		c = x;
+		lChild = NULL;
+		rChild = NULL;
+	}
+
+	_Node(char x, _Node * l, _Node * r){
+		c = x;
+		lChild = l;
+		rChild = r;
+	}
+
+	~_Node(){
+		delete lChild;
+		delete rChild;
+	}
+}Node;
+
+Node * parseIndix(string s){
+	//Base Case: nothing or just a number
+	if (s.size() == 0)
+		return NULL;
+	if (s.size() == 1){
+		Node * n = new Node(s[0]);
+		return n;
+	}
+	//Parse an expression into two
+	int centerIndex = -1;
+	bool isFoundMulti = false;
+	int bracketCount = 0;
+	for (int i = s.size()-1; i > 0; i--){
+		if (s[i] == ')'){
+			bracketCount++;
+		}
+		else if (s[i] == '(')
+			bracketCount--;
+		else if (bracketCount == 0){
+			if ((s[i] == '+') || (s[i] == '-')){
+				centerIndex = i;
+				break;
+			}
+			else if ((!isFoundMulti) && ((s[i] == '*') || (s[i] == '/'))){
+				centerIndex = i;
+				isFoundMulti = true;
+			}
+		}
+	}
+	if ( (centerIndex == -1) && (s[0] == '(') && (s[s.size()-1] == ')') )
+		return parseIndix(s.substr(1,s.size()-2));
+	Node * leftChild  = parseIndix(s.substr(0,centerIndex));
+	Node * rightChild = parseIndix(s.substr(centerIndex+1, s.size() - centerIndex - 1));
+	Node * newNode = new Node(s[centerIndex], leftChild, rightChild); 
+	return newNode;
+}
+
+void printPostTree(Node * tree){
+	if (tree == NULL)
+		return;
+	if ( (tree->lChild == NULL ) && (tree->rChild == NULL) ){
+		cout << tree->c;
+		return;
+	}
+	printPostTree(tree->lChild);
+	printPostTree(tree->rChild);
+	cout << tree->c;
+}
+
+int main(){
+//	freopen("in.txt","r",stdin);
+	int tcase;
+	cin >> tcase;
+	string catty;
+	getline(cin,catty);
+	getline(cin,catty);
+	while(tcase--){
+		string exp = "";
+		string cat;				
+		while (getline(cin,cat)){
+			if (cat.empty())
+				break;
+			exp = exp + cat;
+		}
+		//readin
+		Node * indixTree = parseIndix(exp);
+		//calculation
+		printPostTree(indixTree);
+		delete indixTree;
+		cout << endl;
+		if (tcase)
+			cout << endl;
+		//writeout
+	}
+	return 0;
+}
