@@ -1,0 +1,44 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stdlib.h>
+#include <stdio.h>
+#include <algorithm>
+#include <functional>
+ 
+using namespace std;
+
+int main(){
+	//freopen("in.txt","r",stdin);
+	priority_queue<long long int , vector<long long int>, greater<long long int> > bigHeap;
+	priority_queue<long long int > smallHeap;
+	long long int cat;
+	while (cin >> cat){
+		if (bigHeap.empty() || cat > bigHeap.top())
+			bigHeap.push(cat);
+		else 
+			smallHeap.push(cat);
+
+		if (bigHeap.size() > smallHeap.size() + 1){
+			smallHeap.push(bigHeap.top());
+			bigHeap.pop();
+		}
+		else if (bigHeap.size() + 1< smallHeap.size() ){
+			bigHeap.push(smallHeap.top());
+			smallHeap.pop();
+		}
+		//calculation
+		if (bigHeap.size() > smallHeap.size()){
+			cout << bigHeap.top() << endl;
+		}
+		else if(bigHeap.size() < smallHeap.size()){
+			cout << smallHeap.top() << endl; 
+		}
+		else{  //they are the same size
+			long long int median = ( bigHeap.top() + smallHeap.top() ) / 2; 
+			cout << median << endl;
+		}
+		//calculation and writeout
+	}
+	return 0;
+}
