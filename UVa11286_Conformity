@@ -1,0 +1,49 @@
+#include <iostream>
+#include <unordered_map>
+#include <stdlib.h>
+#include <stdio.h>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <iterator>
+
+using namespace std;
+
+int main(){
+	//freopen("in.txt","r",stdin);
+	int n;
+	cin >> n;
+	while (n){
+		unordered_map<string, int> popularity;
+		for (int i = 0; i < n; i++){
+			vector<int> courses;
+			int cat;
+			for (int j =0; j < 5; j++){
+				cin >> cat;
+				courses.push_back(cat);
+			}
+			sort(courses.begin(),courses.end());
+			string students =  to_string((long long int)(courses[0])) + to_string((long long int)(courses[1])) +
+								to_string((long long int)(courses[2])) +to_string((long long int)(courses[3])) +
+								to_string((long long int)(courses[4]));
+			popularity[students]++;
+		}
+		//readin
+		int maxPop = 0;
+		for (auto it = popularity.begin(); it != popularity.end(); it++){
+			if (it->second > maxPop)
+				maxPop = it->second;
+		}
+		int frosh= 0;
+		for (auto it = popularity.begin(); it != popularity.end(); it++){
+			if (it->second == maxPop)
+				frosh += maxPop;
+		}
+		//calculation
+		cout << frosh << endl;
+		//writeout
+		cin >> n;
+	}
+
+	return 0;
+}
