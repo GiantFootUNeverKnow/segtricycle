@@ -1,0 +1,75 @@
+#include <iostream>
+#include <vector>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+vector<int> parse(string s){
+	if (s == "")
+		return vector<int>();
+	int start = 0;
+	vector<int> v;
+	for (int i = 0; i < s.size(); i++){
+		if (s[i] == ' '){
+			v.push_back(stoi(s.substr(start,i-start)));
+			start = i+1;
+		}
+	}
+	v.push_back(stoi(s.substr(start,s.size())));
+	return v;
+}
+
+void flip(vector<int> & v, int n){
+	reverse(v.begin(),v.end()-n+1);
+}
+
+int main(){
+	//freopen("in.txt","r",stdin);
+	vector<int> pancakes;
+	string s;
+	while (getline(cin,s)){
+		pancakes = parse(s);
+
+		for (int i = 0; i < pancakes.size(); i++)
+			cout << pancakes[i] << " ";
+		cout << endl;
+		//readin and repeat
+
+		vector<int> orderedCakes = pancakes;
+		sort(orderedCakes.begin(), orderedCakes.end(), greater<int>());
+		//orderedCakes is the order that cakes are put into the final stack 
+
+		for (int i = 0; i < orderedCakes.size(); i++){
+			int bottomLayer = orderedCakes[i];
+			int layer;
+			for (int j = 0; j < pancakes.size(); j++){
+				if (pancakes[j] == bottomLayer){
+					layer = j;
+					break;
+				}
+			}
+			int flipNumber = orderedCakes.size() - layer;
+			cout << flipNumber << " ";
+			cout << i + 1 << " ";
+			flip(pancakes,flipNumber);
+			flip(pancakes,i+1);
+		}
+		//flipping
+
+		cout << "0" << endl;
+		//output
+
+		/*
+		for (int i = 0; i < pancakes.size() ;i++){
+			cout << pancakes[i] <<" ";
+		}
+		cout << endl;*/
+		//debug
+
+	}
+
+	return 0;
+}
