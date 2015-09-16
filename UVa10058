@@ -1,0 +1,159 @@
+#include <string>
+#include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+typedef vector<string> phrase;
+
+phrase dissectString(string s){
+	if (s.empty())
+		return phrase();
+	phrase ans;
+	//get rid of heading spaces
+	int headingSpace = 0;
+	while(s[headingSpace] == ' ')
+		headingSpace++;
+	s.erase(0,headingSpace);
+	//get rid of trailing spaces
+	int trailingSpace = s.size()-1;
+	while(s[trailingSpace] == ' ')
+		trailingSpace--;
+	s.erase(trailingSpace+1,s.size());
+	//start processing
+	int start = 0; 
+	for (int i = 0; i < s.size(); i++){
+		if (s[i] == ','){
+			if ((i>0) && (s[i-1] != ' ')){
+				ans.push_back(s.substr(start,i-start));
+			}
+			ans.push_back(",");
+			start = i + 1;
+		}
+		else if (s[i] == ' '){
+			if (i == start){
+				start++;
+				continue;//prevent pushback(" ")
+			}
+			ans.push_back(s.substr(start,i-start));
+			start = i + 1;
+		}		
+	}
+	ans.push_back(s.substr(start));
+	return ans;
+}
+
+bool isVerb(string x){
+	if ( (x.compare("hate") == 0) ||
+		(x.compare("love") == 0) ||
+		(x.compare("know") == 0) ||
+		(x.compare("like") == 0) ||
+		(x.compare("hates") == 0) || 
+		(x.compare("likes") == 0) ||
+		(x.compare("loves") == 0) ||
+		(x.compare("knows") == 0) )
+		return true;
+	return false;
+}
+
+bool isNoun(string x){
+	if ( (x.compare("tom") == 0) || 
+		(x.compare("jerry") == 0) || 
+		(x.compare("goofy") == 0) || 
+		(x.compare("mickey") == 0) || 
+		(x.compare("jimmy") == 0) || 
+		(x.compare("dog") == 0) || 
+		(x.compare("cat") == 0)  ||
+		(x.compare("mouse") == 0)
+		)
+		return true;
+	return false;
+
+}
+
+bool isArticle(string x){
+	if ((x.compare("a") == 0) ||
+		(x.compare("the") == 0))
+		return true;
+	return false;
+}
+
+bool isActor(phrase X){
+	if (X.empty() || X.size() > 2)
+		return false;
+	if (isArticle(X[0]) && (X.size() == 2))
+		return isNoun(X[1]);
+	return ( (X.size() == 1 ) && (isNoun(X[0])) );
+}
+
+bool isActiveList(phrase X){
+	if (X.empty())
+		return false;
+	if (isActor(X))
+		return true;
+	int locAnd = -1;
+	for (int i = X.size()-1; i >=0 ; i--){
+		if (X[i].compare("and") == 0){
+			locAnd = i;
+			break;
+		}
+	}
+	if ( (locAnd == -1) || (locAnd == X.size() - 1) )
+		return false;
+	return ( isActiveList(phrase(X.begin(),X.begin()+locAnd)) && isActor(phrase(X.begin()+locAnd +1, X.end())) );
+}
+
+bool isAction(phrase X){
+	if (X.empty())
+		return false;
+	int locVerb = -1;
+	for (int i = 0; i < X.size(); i++){
+		if (isVerb(X[i])){
+			locVerb = i;
+			break;
+		}
+	}
+	if (locVerb == -1)
+		return false;
+	phrase firstActiveList(X.begin(), X.begin() + locVerb);
+	phrase secondActiveList(X.begin() + 1 + locVerb, X.end());
+	return ( isActiveList(firstActiveList) && isActiveList(secondActiveList) );
+}
+
+bool isStatement(phrase X){
+	if (X.empty())
+		return false;
+	if (isAction(X))
+		return true;
+	int locComma = -1;
+	for (int i = X.size()-1; i >= 0; i--){
+		if (X[i].compare(",") == 0){
+			locComma = i;
+			break;
+		}
+	}
+	if (locComma == -1)
+		return false;
+	phrase firstPart(X.begin(), X.begin() + locComma);
+	phrase secondPart(X.begin() + locComma + 1, X.end());
+	return ( (isStatement(firstPart)) && (isAction(secondPart)) );
+}
+
+int main(){
+	//freopen("in.txt","r",stdin);
+	string scat;
+	while (getline(cin,scat)){
+		phrase sentence = dissectString(scat);
+		
+		if (isStatement(sentence))
+			cout << "YES I WILL" << endl;
+		else 
+			cout << "NO I WON'T" << endl; 
+
+	}
+
+	return 0;
+}
