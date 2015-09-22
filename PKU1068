@@ -1,0 +1,59 @@
+#include <iostream>
+#include <stdlib.h>
+#include <string>
+#include <vector>
+#include <stack>
+#include <queue>
+#include <math.h>
+#include <cstdlib>
+
+using namespace std;
+
+int main(){
+	//freopen("in.txt","r",stdin);
+	int tcase;
+	cin >> tcase;
+	while(tcase--){
+		int n;
+		cin >> n;
+		int cat;
+		vector<int> Pseq;
+		for (int i = 0; i < n; i++){
+			cin >> cat;
+			Pseq.push_back(cat);
+		}
+		//read in 
+		string s = "";
+		int leftCount = 0;
+		for (int i = 0; i< Pseq.size(); i++){
+			for (int j = leftCount; j < Pseq[i]; j++)
+				s = s + '(';
+			s = s + ')';
+			leftCount = Pseq[i];
+		}
+		//cout << s << endl;
+		//convert P to string
+		stack<int> leftParan;
+		vector<int> Wseq;
+		for (int i = 0; i < s.length(); i++){
+			if (s[i] == '(')
+				leftParan.push(i);
+			if (s[i] == ')'){
+				int matchedLeft = leftParan.top();
+				leftParan.pop();
+				int rightCount = 0;
+				for (int j = matchedLeft; j <= i; j++){
+					if (s[j] == ')')
+						rightCount++;
+				}
+				Wseq.push_back(rightCount);
+			}
+		}
+		//convert string to W
+		for (int i = 0; i < Wseq.size(); i++)
+			cout << Wseq[i] << " ";
+		cout << endl;
+		//output
+	}
+	return 0;
+}
