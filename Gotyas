@@ -26,3 +26,15 @@
 ##Careful about using erase() of multiset. Check first! Don't apply erase() on a position like erase(13). 
 ##Don't erase("APPLE") if there is only one "APPLE" you really want to delete.
 ##Use erase with iterators!
+
+##PKU1753. The problem is pretty simple, just using BFS to search possible movements of a board game. However, it requires much 
+##consideration for the performance. I failed the TLE for seven or eight times even if I have used the bit operation to 
+##speed up the codes, which should be the only tricky part of this problem.
+##I only managed to discover the deficiency of my codes after line by line examination of my codes through 
+##comparing with someone's codes online. Until my last submission, my codes still run ten times slower than 
+##his,causing TLE again, even though my data structure and priming are both better than his.
+##It is too annoying to see TLE againagain and again. Finally, I located some place that might cause bad performance and it only appears in my codes:
+##I use a vector instead of array for passing data of at most five integers. It completely dragged my program down
+##Removing this "careless design", my codes finally outperformes the BFS codes shown online.
+##So frustrating when you know all the tricks and DS and algos but only remiss the most trivial things.
+##So surprised that C++ vector suffers so much when it deals with little amount of data. Over ten times slower than a simple array
