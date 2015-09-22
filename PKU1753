@@ -1,0 +1,109 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <math.h>
+#include <stack>
+
+using namespace std;
+
+#define MAX_STATE 65536
+
+int boardState[MAX_STATE];
+
+int goal = -1;
+
+int min(int a, int b){
+	if (a <= b)
+		return a;
+	else 
+		return b;
+}
+
+vector<int> neighbor(int l){
+	vector<int>ans;
+	ans.push_back(l);
+	if (l-4 >= 0)
+		ans.push_back(l-4);
+	if (l % 4 != 0)
+		ans.push_back(l-1);
+	if (l % 4 != 3)
+		ans.push_back(l+1);
+	if (l +4 < 16)
+		ans.push_back(l+4);
+	return ans;
+}
+
+int flip(int l, int curState){
+	//vector<int> flipped = neighbor(l);
+	int flipped[5];
+	memset(flipped,-1,sizeof(flipped));
+	flipped[0] = l;
+	if (l-4 >= 0)
+		flipped[1] = l-4;
+	if (l % 4 != 0)
+		flipped[2] = l-1;
+	if (l % 4 != 3)
+		flipped[3] = l+1;
+	if (l +4 < 16)
+		flipped[4] = l+4;
+	int newState = curState;
+	for (int i = 0; i < 5; i++){
+		if (flipped[i] == -1)
+			continue;
+		int power2 = (1 << flipped[i]);
+		newState ^= power2;
+	}
+	return newState;
+}
+
+int paint(int initState){
+	//for (int i = 0; i < MAX_STATE; i++)
+		//boardState[i] = 0;
+	memset(boardState,0,sizeof(boardState));
+	queue<int> q;
+	boardState[initState] = 1;
+	q.push(initState);
+	//int deb = 0;
+	while (!q.empty()){
+		int curState = q.front();
+		if (( curState == 0) || (curState == MAX_STATE - 1))
+			return boardState[curState];
+		for (int i = 0; i < 16; i++){
+			int newState = flip(i,curState);
+			if (!boardState[newState]){
+				boardState[newState] = 1 + boardState[curState];
+				if ( ( newState == 0) || (newState == MAX_STATE) )
+					return boardState[newState];
+				q.push(newState);
+			}
+		}
+		q.pop();
+	}
+//	cout << deb << endl;
+	return MAX_STATE;
+}
+
+int main(){
+	//freopen("in.txt","r",stdin);
+	char c;
+	int final= 0;
+	for (int i = 0; i < 16; i++){
+		cin >>c;
+		if (c == 'b')
+			final += 1<<i;//(int)pow(2.0,i);
+
+	}
+	goal = final;
+	//init
+	//int whiteS = paint(0);
+	//int blackS = paint(MAX_STATE-1);
+	int wbS = paint(goal);
+	//calculation
+	if (wbS == MAX_STATE)
+		cout << "Impossible" << endl;
+	else
+		cout << wbS-1 << endl;
+	//writeout
+
+	return 0;
+}
