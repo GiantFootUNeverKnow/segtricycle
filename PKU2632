@@ -1,0 +1,127 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <stdio.h>
+#include <stdlib.h>
+
+using namespace std;
+
+int warehouse[101][101];
+
+typedef struct robot_{
+	int x;
+	int y;
+	int orient;
+	robot_(int i, int j, char e){
+		x = i; y = j; 
+		switch(e){
+		case 'N':
+			orient = 0;
+			break;
+		case 'E':
+			orient = 1;
+			break;
+		case 'S':
+			orient = 2;
+			break;
+		case 'W':
+			orient = 3;
+			break;
+		}
+	}
+}robot;
+
+void rotate(robot &r, char turnWay, int repeat){
+	repeat = repeat % 4;
+	if (turnWay == 'L')
+		r.orient -= repeat;
+	else if (turnWay == 'R')
+		r.orient += repeat;
+	r.orient = (4 + r.orient % 4) % 4;
+}
+
+int main(){
+	//freopen("in.txt","r",stdin);
+	int K; 
+	cin >> K;
+	while (K--){
+		int A,B;
+		cin >> A >> B;
+		for (int i = 1; i <= A; i++)
+			for (int j = 1; j <= B; j++)
+				warehouse[i][j] = 0;
+		int N,M;
+		cin >> N >> M;
+		vector<robot> robots;
+		int c,r;
+		char o;
+		for (int i = 1; i <= N; i++){
+			cin >> c >> r >> o;
+			robot rbt(c,r,o);
+			robots.push_back(rbt);
+			warehouse[c][r] = i;
+		}
+		//readin
+		int index, repeat;
+		char action;
+		int crashFlag = false;
+		while(M--){
+			//debugging
+			/*
+			for (int i = 1; i <= B; i++){
+				for (int j = 1; j <= A; j++){
+					cout << warehouse[j][i] << " ";
+				}
+				cout << endl;
+			}
+			cout << endl;
+			*/
+			//debugging ends
+			cin >> index >> action >> repeat;
+			if (crashFlag)
+				continue;
+			if (action != 'F')
+				rotate(robots[index-1],action,repeat);
+			else{
+				while(repeat--){
+					int destC = robots[index-1].x;
+					int destR = robots[index-1].y;
+					switch (robots[index-1].orient){
+					case 0:
+						destR += 1;
+						break;
+					case 1:
+						destC += 1;
+						break;
+					case 2:
+						destR -= 1;
+						break;
+					case 3:
+						destC -= 1;
+						break;
+					}
+					if ( (destC > A)|| (destC <= 0)|| (destR <= 0) || (destR >B) ){
+						cout << "Robot " <<  index << " crashes into the wall" << endl;
+						crashFlag = true;
+						break;
+					}
+					else if (warehouse[destC][destR]){
+						cout << "Robot " << index << " crashes into robot " << warehouse[destC][destR] << endl;
+						crashFlag = true;
+						break;
+					}
+					else{
+						warehouse[robots[index-1].x][robots[index-1].y] = 0;
+						warehouse[destC][destR] = index;
+						robots[index-1].x = destC;
+						robots[index-1].y = destR;
+					}
+				}
+			}
+		}
+		
+		if (!crashFlag)
+			cout << "OK" << endl;
+	}
+	return 0;
+}
