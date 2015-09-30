@@ -1,0 +1,132 @@
+#include <vector>
+#include <string>
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <algorithm>
+
+using namespace std;
+
+typedef struct piece_{
+	int x; 
+	int y;
+	char c;
+	
+	struct piece_(string loc, bool party){//black is 1, white is 0
+		if (loc.size() == 2){
+			if (party){
+				c = 'p';
+			}
+			else 
+				c = 'P';
+			x = loc[0] - 'a';
+			y = loc[1] - '1';
+		}//for pawn
+		else{
+			x = loc[1] - 'a';
+			y = loc[2] - '1';
+			switch (loc[0]){
+			case 'K':
+				if (party)
+					c = 'k';
+				else
+					c = 'K';
+				break;
+			case 'Q':
+				if (party)
+					c = 'q';
+				else 
+					c = 'Q';
+				break;
+			case 'R':
+				if (party)
+					c = 'r';
+				else
+					c = 'R';
+				break;
+			case 'B':
+				if (party)
+					c = 'b';
+				else
+					c = 'B';
+				break;
+			case 'N':
+				if (party)
+					c  = 'n';
+				else 
+					c = 'N';
+				break;
+			}
+		}
+	}
+}piece;
+
+vector<string> split(string s){
+	vector<string> v;
+	int index = 0;
+	while (index < s.size() && s[index] != ' '){
+		index++;
+	}
+	if (index >= s.size())
+		return vector<string>();
+	index++;
+	int str = index;
+	while(index < s.size()){
+		if (s[index] == ','){
+			v.push_back(s.substr(str,index-str));
+			str = index+1;
+		}
+		index++;
+	}
+	v.push_back(s.substr(str,index-str));
+	return v;
+}
+
+
+int main(){
+	//freopen("in.txt","r",stdin);
+	string blackPieces, whitePieces;
+	getline(cin,whitePieces);
+	getline(cin,blackPieces);
+	char board[8][8];
+	memset(board,0,sizeof board);
+	vector<string> whites = split(whitePieces);
+	for (int i = 0; i < whites.size(); i++){
+		piece p(whites[i],0);
+		board[p.y][p.x] = p.c;
+	}
+	vector<string> blacks = split(blackPieces);
+	for (int i = 0; i < blacks.size(); i++){
+		piece p(blacks[i],1);
+		board[p.y][p.x] = p.c;
+	}
+	//read in
+	bool ifBlackGrid = false;
+	for(int i = 0; i < 8; i++){
+		for (int j = 0; j < 8; j++){
+			cout << "+---";
+		}
+		cout << "+" << endl;
+		for (int j = 0; j < 8; j++){
+			cout << "|";
+			string s;
+			if (ifBlackGrid)
+				s = ":::";
+			else
+				s =  "...";
+			if (board[7-i][j])
+				s[1] = board[7-i][j];
+			cout << s;
+			ifBlackGrid = !ifBlackGrid;
+		}
+		cout << "|" << endl;
+		ifBlackGrid = !ifBlackGrid;
+	}
+	for (int j = 0; j < 8; j++){
+			cout << "+---";
+		}
+	cout << "+" << endl;
+	//draw out
+	return 0;
+
+}
