@@ -1,0 +1,96 @@
+#include <iostream>
+#include <vector>
+#include <map>
+#include <stdio.h>
+#include <stdlib.h>
+#include <algorithm>
+#include <set>
+
+using namespace std;
+
+int pow2(int k){
+	if (k==0)
+		return 1;
+	else return 2 * pow2(k-1);
+}
+
+vector<int> decode(int p,int n){//decode an integer number p encoded by n binary digits
+	vector<int> ans;
+	while(n){
+		ans.push_back(p%2);
+		p = p/2;
+		n--;
+	}
+	return ans;
+}
+
+bool ifSum(vector<int> inde, vector<int> num, int t){//check if subset of num can sum to t
+	if (inde.size() != num.size()){
+		cerr << "invalid input to isSum" << endl;
+		return false;
+	}
+	for (int i = 0; i < num.size(); i++){
+		t -= inde[i] * num[i];	
+	}
+	return (t==0);
+}
+
+bool fncomp (vector<int> lhs, vector<int> rhs) { //assume lhs,rhs are both in descending order
+	if (lhs.empty() || rhs.empty()){
+		cerr << "Error in comp" << endl;
+		return false;
+	}
+	int i = 0;
+	while (i < lhs.size() && lhs[i] == rhs[i])
+		i++;
+	if (i >= lhs.size())//should only happen when they are the same
+		return false;
+	return lhs[i] >= rhs[i];
+}
+
+bool(*fn_pt)(vector<int>,vector<int>) = fncomp;
+
+int main(){
+	//freopen("in.txt","r",stdin);
+	int t,n;
+	while (cin >> t >> n){
+		if (t == 0 && n == 0)
+			break;
+		vector<int> list;
+		int cat;
+		for (int i = 0; i < n; i++){
+			cin >> cat;
+			list.push_back(cat);
+		}
+		//read in
+		set<vector<int>,bool(*)(vector<int>,vector<int>)> ans(fn_pt);
+		for (int k = 0; k < pow2(n); k++){
+			vector<int> indices = decode(k,n);
+			if (ifSum(indices,list,t)){
+				vector<int> sum;
+				for (int j = 0; j < indices.size(); j++){
+					if (indices[j])
+						sum.push_back(list[j]);
+				}
+				
+				if (ans.find(sum) == ans.end())
+					ans.insert(sum);
+			}
+		}
+		//calculation
+		cout << "Sums of " << t << ":" << endl;
+		if (ans.empty())
+			cout << "NONE" << endl;
+		else
+		for (set<vector<int>,bool(*)(vector<int>,vector<int>)>::iterator it = ans.begin(); it != ans.end(); it++){
+			vector<int> sum = *it;
+			for (int i = 0; i < sum.size()-1; i++){
+				cout << sum[i] << "+";
+			}
+			cout << sum[sum.size()-1] << endl;
+		}
+		//write out
+	}
+	
+	return 0;
+} 
