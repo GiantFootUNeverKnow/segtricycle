@@ -41,3 +41,6 @@
 
 ##PKU2632. Modulation in C++ is not well defined, so there is possibility you will obtain a negative modulation. The easiest way
 ##to write module is like : (n + (i % n)) % n.
+##PKU1564. Strict weak ordering requires that comparing two identical objects a, b in whichever order should return false. Eg
+##a == b. f(a,b) == f(b,a) == false
+##More importantly, POJ seems to use C++99. SO SAD
