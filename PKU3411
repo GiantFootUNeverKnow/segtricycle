@@ -1,0 +1,110 @@
+#include <iostream>
+#include <vector>
+#include <stdlib.h>
+#include <stdio.h>
+#include <algorithm>
+#include <map>
+#include <queue>
+
+using namespace std;
+
+int n = 0;
+int m = 0;
+const int INF = 2000000000;
+
+typedef struct node_{
+	int name;
+	int state;
+	vector<pair<node_ *, int> > adjList;
+	node_(int n, int s){
+		name = n;
+		state = s;
+	}
+	bool operator==(node_ a) const{
+		if(a.name==name && a.state== state)return true;
+		else return false;
+	}
+
+	bool operator<(node_ a) const{
+		return (name < a.name);
+	}
+}node;
+
+
+typedef vector<int> VI;
+typedef pair<node*,int> PNI;
+typedef vector< PNI > VPNI;
+typedef pair<int,node* > PIN;
+typedef pair<int,int> PII;
+typedef vector<node> VN;
+typedef vector< VN > VVN; 
+
+VVN graph;
+
+int pow2[]= {1,2,4,8,16,32,64,128,256,512,1024,2048};
+
+void constructGrpah(){
+	for (int i = 0; i < n; i++){
+		VN nodes;
+		for (int j = 0; j < pow2[n]; j++){
+			node nd(i,j);
+			nodes.push_back(nd);
+		}
+		graph.push_back(nodes);
+	}
+}
+
+int main(){
+	//freopen("in.txt","r",stdin);
+	cin >> n >>m;
+	constructGrpah();
+	
+	int a,b,c,p,r;
+	for (int i = 0 ; i < m;i++){
+		cin >> a >> b >> c >> p >> r;
+		a--; b--; c--;
+		for (int j = 0; j < pow2[n]; j++){
+			if(j & pow2[a])//state that visited a
+				if ( (j & pow2[c]) && (p < r) ){//state that visited c and paying in advance at c is cheaper
+					graph[a][j].adjList.push_back(make_pair(&graph[b][j | pow2[b]],p));
+				}
+				else{					
+					graph[a][j].adjList.push_back(make_pair(&graph[b][j | pow2[b]],r));
+				}
+		}
+	}
+	//graph is constructed
+	
+	priority_queue<PIN,vector<PIN>,greater<PIN> > Q;
+	int N = pow2[n];
+	map<node*,int> dist;
+	
+	Q.push(make_pair(0,&(graph[0][pow2[0]]) ));
+	dist[ &(graph[0][pow2[0]]) ] = 0;
+	while (!Q.empty()){
+		PIN p = Q.top();
+		Q.pop();
+
+		node* here = p.second;
+		for (vector<pair<node_ *, int> >::iterator it = here->adjList.begin(); it != here->adjList.end(); it++){
+			if (dist.find(it->first) == dist.end() 
+				|| dist[here] + it->second < dist[it->first]){
+				dist[it->first] = dist[here] + it->second;
+				Q.push(make_pair(dist[it->first],it->first));
+			}
+		}
+	}
+	//dijkstra
+	int minDist = INF;
+	for (int i = 0; i < pow2[n]; i++){
+		if (dist.find( &(graph[n-1][i]) ) != dist.end())
+			if (dist[ &(graph[n-1][i]) ] < minDist)
+				minDist = dist[ &(graph[n-1][i]) ];
+	}
+	if (minDist == INF)
+		cout << "impossible" << endl;
+	else
+		cout << minDist << endl;
+	//output
+	return 0;
+}
