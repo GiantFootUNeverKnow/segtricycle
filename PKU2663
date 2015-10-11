@@ -1,0 +1,43 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+long long int matchVal[31];
+
+long long int match(int n){
+	if (matchVal[n] != -1)
+		return matchVal[n];
+	if (n % 2 == 1)
+		return 0;
+	if (n == 0)
+		return 1;
+	if (n == 2)
+		return 3;
+	long long int sum = 0;
+	for (int i = 2; i <= n; i+=2){
+		if (i == 2)
+			sum += 3 * match(n-2);
+		else
+			sum += 2 * match(n-i);
+	}
+	matchVal[n] = sum;
+	return sum;
+}
+
+int main(){
+	//freopen("in.txt","r",stdin);
+	int n;
+	memset(matchVal,-1,sizeof(matchVal));
+//	for (int i = 0; i < 30; i++)
+	//	matchVal[i] = -1;
+	cin >> n;
+	while (n != -1){
+		cout << match(n) << endl;
+		cin >> n;
+	}
+	return 0;
+}
