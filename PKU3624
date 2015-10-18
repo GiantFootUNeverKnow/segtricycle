@@ -1,0 +1,30 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+const int NUM_ITEM = 14000;
+
+int main(){
+//	freopen("in.txt","r",stdin);
+	int N,M;
+	cin >> N >> M;
+	int dp[NUM_ITEM];
+	int weight[NUM_ITEM];
+	int desire[NUM_ITEM];
+	memset(dp,0,sizeof(dp));
+	for(int i = 0;i < N; i++){
+		cin >> weight[i] >> desire[i];
+	}
+	//reain
+	for (int i = 0; i < N; i++)
+		for (int j = M; j >= weight[i]; j--){
+			dp[j] = max(dp[j],dp[j-weight[i]] + desire[i]);
+		}
+	//backpack
+	cout << dp[M] << endl;
+	return 0;
+}
