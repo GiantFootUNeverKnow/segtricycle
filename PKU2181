@@ -1,0 +1,46 @@
+#include <iostream>
+#include <stack>
+#include <stdlib.h>
+#include <stdio.h>
+
+using namespace std;
+
+int main(){
+	//freopen("in.txt","r",stdin);
+	int n,cat;
+	stack<int> s;
+	cin >> n;
+	while (n--){
+		cin >> cat;
+		s.push(cat);
+	}
+	int delElm,insElm;
+	delElm = 1000;
+	insElm = -1;
+	long long int power = 0;
+	bool state = 1;//1 means ready to add, 0 means ready to delete 
+	while (!s.empty()){
+		int nextElm = s.top();
+		if (state == 1 && nextElm > insElm){
+			insElm = nextElm;
+		}
+		else if (state == 1 && nextElm < insElm){
+			power += insElm;
+			state = 0;
+			delElm = nextElm;
+		}
+		else if (state == 0 && nextElm < delElm ){
+			delElm = nextElm;
+		}
+		else if (state == 0 && nextElm > delElm){
+			power -= delElm;
+			state = 1;
+			insElm = nextElm;
+		}
+		s.pop();
+	}
+	if (state == 1)
+		power += insElm;
+	cout << power<< endl;
+	return 0;
+}
