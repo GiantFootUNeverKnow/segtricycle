@@ -1,0 +1,95 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <algorithm>
+#include <queue>
+#include <map>
+#include <vector>
+#include <climits>
+#include <utility>
+#include <functional>
+
+using namespace std;
+
+typedef struct _node{
+	int name;
+	bool visisted;
+	vector<int> adjList;
+	vector<int> adjWeight;
+}Node;
+
+vector<Node *> nodes;
+/*
+class Mycomparison 
+{
+public:
+  bool operator() (const int & lhs,const int & rhs) const
+  {
+	  return (nodes[lhs]->dist < nodes[rhs]->dist);
+  }
+};*/
+
+int main(){
+	//freopen("in.txt","r",stdin);
+	int n,m;
+	cin >> n >> m;
+	//typedef priority_queue<int ,vector<int>, Mycomparison> mypq_type;
+	while (m && n){
+		nodes.clear();
+		//mypq_type q;
+		typedef pair<int, int> P;
+		priority_queue< P, vector<P>, greater<P> > pq;
+		for (int i = 0; i < n; i++){
+			Node * node = new Node();
+			node->name = i;
+			node->visisted = false;
+	//		node->dist = INT_MAX/2;
+			nodes.push_back(node);
+		//	q.push(i);
+			//pq.push(make_pair(INT_MAX/2,i));
+		}
+		int x,y,z;
+		long long int total = 0;
+		for (int i = 0; i < m; i++){
+			cin >> x >> y >> z;
+			nodes[x]->adjList.push_back(y);
+			nodes[x]->adjWeight.push_back(z);
+			nodes[y]->adjList.push_back(x);
+			nodes[y]->adjWeight.push_back(z);
+			total += z;
+		}
+		cin >> n >> m;
+		//readin and build tree
+	//	nodes[0]->visisted = true;
+	//	nodes[0]->dist = 0;
+		pq.push(make_pair(0,0));
+		Node * cur;
+		long long int fee = 0;
+	//	while (!q.empty()){
+			//cur = nodes[q.top().name];
+		while (!pq.empty()){
+			cur = nodes[pq.top().second];
+			long long int curfee = pq.top().first;
+			pq.pop();
+		//	fee += cur->dist;
+			if (!cur->visisted){
+				fee+=curfee;
+				for (int i = 0; i < cur->adjList.size(); i++){
+					int index = cur->adjList[i];
+					int w = cur->adjWeight[i];
+				//	if (!nodes[index]->visisted && nodes[index]->dist > w){
+				//		nodes[index]->dist = w;
+				//	}
+					if (!nodes[index]->visisted)
+						pq.push(make_pair(w,index));
+				}
+					cur->visisted = true;
+			}
+			
+		}
+		//prim
+		cout << total - fee << endl;
+	}
+	return 0;
+}
+
