@@ -44,3 +44,12 @@
 ##PKU1564. Strict weak ordering requires that comparing two identical objects a, b in whichever order should return false. Eg
 ##a == b. f(a,b) == f(b,a) == false
 ##More importantly, POJ seems to use C++99. SO SAD
+
+##UVA11631 Doing prim on C++ is so pain... If you wanna declare a node, there is no problem. A graph, no problem either. However
+##if you want to do anything with priorioty queue for some pointers, you need to be careful! I never succeeded in doing it for one time!
+##The priority queue for some reason always yelled "Invalid Heap" to me, even though I wrote the almost same code as what is 
+##written on the official example for customized comparator. I tried this for at least 5 hours, including for this problem and another
+##Finally, I decided to go off this tough road. What is hard to do here is to create a priority queue with pointer to an object
+##You can actually choose to use Kruskal instead of Prim, which could use pq<Edge> in which Edge is just an object rather than a ptr
+##If you insist on using Prim/Dijsktra, you have to use pair somehow. It would be much more fluent when you use just priority q
+##for just primitives.
