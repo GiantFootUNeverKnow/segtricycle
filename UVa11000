@@ -1,0 +1,28 @@
+#include <math.h>
+#include <string>
+#include <iostream>
+
+using namespace std;
+
+int main(){
+	long long int N;
+	cin >> N;
+	while(N != -1){
+		long long int i = 0;
+		long long int female = 1;
+		long long int male = 0;
+		while (i < N){
+			long long int maleNew = female + male;
+			//maleNew += maleNew;
+			long long int femaleNew = female+ maleNew;
+			maleNew -= male;
+			femaleNew -= (female - 1);
+			male = maleNew; female = femaleNew;
+			i++;
+		}
+		cout << male << " " << female << endl;
+		cin >> N;
+	}
+
+	return 0;
+}
