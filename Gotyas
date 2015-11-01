@@ -53,3 +53,10 @@
 ##You can actually choose to use Kruskal instead of Prim, which could use pq<Edge> in which Edge is just an object rather than a ptr
 ##If you insist on using Prim/Dijsktra, you have to use pair somehow. It would be much more fluent when you use just priority q
 ##for just primitives.
+
+##UVA10229 A good practice for math problem. This problem introduces the concept of modular fibonacci to me. I figured out 
+##Pisano period and managed to generate formula of Pisano period for this problem. To calculate modular fibonacci is really expensive, unless
+##non-trivial improvement has been made from the definition formula of Fibonacci. The first step is to approach the problem by matrix 
+##multiplication. We have learned in class that Fibonacci number can be calculated by dynamical system. Furthermore, one has to 
+##know how to take power of matrix efficiently, which is analogous to taking power of integer. Finally, I applied the Pisano period
+##to speed up the computation. 
