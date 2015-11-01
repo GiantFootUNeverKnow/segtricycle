@@ -1,0 +1,81 @@
+#include <iostream>
+#include <vector>
+#include <math.h>
+#include <map>
+#include <set>
+#include <iostream>
+#include <utility>
+
+using namespace std;
+
+long long int MOD;
+
+typedef struct Vec_{
+	int vec[2];
+	Vec_(int a, int b){
+		vec[0] = a; vec[1] = b;
+	}
+}Vec;
+
+typedef struct Mat_{
+	long long int arr[2][2];
+}Mat;
+
+Mat matrixMulti(Mat A, Mat B ){
+	Mat C;
+	for (int i = 0; i < 2; i++)
+		for (int j = 0; j < 2; j++){
+			C.arr[i][j] = (A.arr[i][0]*B.arr[0][j] + A.arr[i][1] * B.arr[1][j]) % MOD;
+		}
+	return C;
+}
+
+Mat matrixPower(Mat A, int n){
+	Mat M;
+	if (n == 0){
+		M.arr[0][0] = M.arr[1][1] = 1;
+		M.arr[1][0] = M.arr[0][1] = 0;
+		return M;
+	}
+	else if (n % 2 == 0){
+		return matrixMulti(matrixPower(A,n/2),matrixPower(A,n/2));
+	}
+	else if (n % 2  == 1){
+		return matrixMulti(A,matrixPower(A,n-1));
+	}
+}
+
+Vec mvMulti(Mat A, Vec v){
+	int x = ( A.arr[0][0] * v.vec[0] + A.arr[0][1] * v.vec[1] ) % MOD;
+	int y = ( A.arr[1][0] * v.vec[0] + A.arr[1][1] * v.vec[1] ) % MOD;
+	Vec b(x,y);
+	return b;
+}
+
+int main(){
+	int n,m;
+	Mat Fib;
+	Fib.arr[0][1] = Fib.arr[0][0] = Fib.arr[1][0] = 1;
+	Fib.arr[1][1] = 0;
+	while (cin >> n >> m){
+		MOD = (long long int)pow(2.0,(double)m);
+		Vec initialVector(1,0);
+		
+		long long int pisano = 3 * (long long int)pow(2.0,(double)m);
+		//Pisano period of 2^m is 3 * (2 ^ (m-1))
+
+		n = n % pisano;
+		
+		if (m == 0 || n == 0){
+			cout << 0 << endl;
+			continue;
+		}
+
+		Mat A = matrixPower(Fib,n-1);
+
+		Vec res = mvMulti(A,initialVector);
+
+		cout << res.vec[0] << endl;
+	}
+	return 0;
+}
