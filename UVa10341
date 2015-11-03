@@ -1,0 +1,48 @@
+#include <iostream>
+#include <cmath>
+#include <iostream>
+#include <stdlib.h>
+#include <iomanip>
+#include <stdio.h>
+
+using namespace std;
+
+int p,q,r,s,t,u;
+
+double epsilon = 0.000001;
+
+double delta = 0.000000001;
+
+double f(double x){
+	double ans = p*exp((-1)* x) + q*sin(x) + r*cos(x) + s*tan(x) + t * x * x + u;
+	return ans;
+}
+
+int main(){
+//	freopen("in.txt","r",stdin);
+	while (cin >> p >> q >> r  >> s >> t >> u){
+		double low = 0.0;
+		double high = 1.0;
+		double mid = (low + high) / 2;
+		bool isFail = false;
+		while (fabs(f(mid)) > epsilon){
+			if (f(mid) > 0){
+				low = mid;
+			}
+			else if (f(mid) < 0){
+				high = mid;
+			}
+			if (fabs(high-low) < delta){
+				isFail = true;
+				break;
+			}				
+			mid = (low + high) / 2;
+		} 
+		cout << fixed;
+		if (isFail)
+			cout << "No solution" << endl;
+		else
+			cout << setprecision(4) << mid << endl;
+	}
+	return 0;
+}
