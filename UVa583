@@ -1,0 +1,65 @@
+#include <cmath>
+#include <iostream>
+#include <stdlib.h>
+#include <vector>
+#include <algorithm>
+#include <stdlib.h>
+#include <iomanip>
+
+using namespace std;
+
+const int N = 50000;
+vector<int> primes;
+
+void sieve(){
+	bool marked[N];
+	for (int i = 2; i < N; i++){
+		marked[i] = true;
+	}
+	//init
+	for (int i = 2; i < N; i++){
+		if (marked[i]){
+			for (int j = 2; i * j < N; j++){
+				marked[i*j] = false;
+			}
+			primes.push_back(i);
+		}
+	}
+}
+
+int main(){
+	//freopen("in.txt","r",stdin);
+	long long int G;
+	sieve();
+	while (cin >> G){
+		if (G == 0)
+			break;
+		cout << G << " = ";
+		bool firstFactor = false;
+		if (G < 0){
+			cout << "-1";
+			G = (-1) * G;
+			firstFactor = true;
+		}
+		for (int i = 0; i < primes.size(); i++){
+			while (G % primes[i] == 0){
+				if (!firstFactor){
+					cout << primes[i];
+					firstFactor = true;
+				}
+				else
+					cout << " x " << primes[i];
+				G = G / primes[i];
+			}
+			if ( primes[i] * primes[i] > G )
+				break;
+		}
+		if (G > 1)
+			if (firstFactor)
+				cout << " x " << G;
+			else
+				cout << G;
+		cout<< endl;
+	}
+	return 0;
+}
