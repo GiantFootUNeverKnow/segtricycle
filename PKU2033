@@ -1,0 +1,40 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int main(){
+//	freopen("in.txt","r",stdin);
+	string codes;
+	cin >> codes;
+	while (codes.compare("0") != 0){
+		int prevprev = 1;
+		int prev = 1;
+		if (codes.size() == 1){
+			cout << 1 << endl;
+		}
+		else{
+			for (int i = 1; i < codes.size(); i++){
+				int cur;
+				if (codes[i] == '0'){
+					cur = prevprev;
+				}
+				else if (codes[i-1] == '1' || (codes[i-1] == '2' && codes[i] <= '6')){
+					cur = prevprev + prev;
+				}
+				else{
+					cur = prev;
+				}
+				prevprev = prev;
+				prev = cur;	
+			}			
+			cout << prev << endl;
+		}
+		cin >> codes;
+		
+	}
+	return 0;
+}
