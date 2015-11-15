@@ -60,3 +60,5 @@
 ##multiplication. We have learned in class that Fibonacci number can be calculated by dynamical system. Furthermore, one has to 
 ##know how to take power of matrix efficiently, which is analogous to taking power of integer. Finally, I applied the Pisano period
 ##to speed up the computation. 
+
+##PKU3186 Don't declare big arrays in main, either use vector or declare outside main
