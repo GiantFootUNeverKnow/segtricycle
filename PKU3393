@@ -1,0 +1,88 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <stdio.h>
+#include <stdlib.h>
+
+using namespace std;
+
+bool good[10001][13];
+bool lucky[10001][13];
+
+bool isLeap(int year){
+	if (year == 1700)
+		return true;
+	if (year <= 1582)
+		return (year % 4 == 0);	
+	else{
+		if (year % 400 == 0)
+			return true;
+		else
+			return (  (year % 4 == 0) && (year % 100 != 0) );
+	}
+}
+
+void init(){
+	int months[] = {-1,31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+	int monthEnd = 5;
+	int monthStart;
+	for (int year = 1; year < 10000; year++){
+		for (int month = 1; month <= 12; month++ ){
+			monthStart = (monthEnd + 1) % 7;
+			if (year == 1752 && month == 9)
+				monthEnd = (monthStart + 18) % 7;
+			else
+				monthEnd = (monthStart + months[month] - 1) % 7;
+			if (isLeap(year) && month == 2)
+				monthEnd = (monthEnd + 1) % 7;
+			good[year][month] = !(monthStart >= 2 && monthStart <= 5); //if month starts on Tuesday-Friday, it is not a good month
+			lucky[year][month] = !(monthEnd >= 1 && monthEnd <= 4); //if month ends on Monday-Thursday, it is not a lucky month
+		}
+	}
+}
+
+int main(){
+	//freopen("in.txt","r",stdin);
+	int w;
+	cin >> w;
+	init();
+	while (w--){
+		int ys,ye,ms,me;
+		cin >> ys >> ms >> ye >> me;
+		int countGood = 0;
+		int countLucky = 0;
+		if (ys == ye)
+			for (int i = ms; i <= me; i++){
+				if (good[ys][i]) 
+					countGood++;
+				if (lucky[ys][i])
+					countLucky++;
+			}
+		else{
+			for (int j = ms; j < 13; j++){
+				if (good[ys][j]) 
+					countGood++;
+				if (lucky[ys][j])
+					countLucky++;
+			}
+			for (int i = ys + 1; i < ye; i++){
+				for (int j = 1; j <= 12; j++){
+					if (good[i][j]) 
+						countGood++;
+					if (lucky[i][j])
+						countLucky++;
+				}
+			}
+			for (int j = 1; j <= me; j++){
+				if (good[ye][j]) 
+					countGood++;
+				if (lucky[ye][j])
+					countLucky++;
+			}
+		}
+		cout << countLucky << " " << countGood << endl;
+	}
+	return 0;
+}
