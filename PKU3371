@@ -1,0 +1,83 @@
+#include <iostream>
+#include <string>
+#include <stdio.h>
+#include <stdlib.h>
+#include <vector>
+#include <cctype>
+#include <iomanip>
+#include <algorithm>
+
+using namespace std;
+
+int main(){
+	//freopen("in.txt","r",stdin);
+	string s="";
+	string readin;
+	while (getline(cin,readin)){
+		s += readin;
+		s += " ";
+	}
+	//readin
+	transform(s.begin(), s.end(), s.begin(), tolower);
+	//1.get every thing to lower case
+	int sentenceCount = 0;
+	size_t found = s.find_first_of(".:;!?");
+	while (found!=string::npos)
+	{
+		sentenceCount++;
+		found=s.find_first_of(".;:?!",found+1);
+	}
+	//2.count # of occurance of .;:!
+	int wordStart = 0;
+	size_t wordEnd = s.find_first_of(" ,");
+	vector<string> wordList;
+	while (wordEnd!=string::npos)
+	{
+		string curWord = s.substr(wordStart,wordEnd-wordStart);
+		while (!curWord.empty() && !isalpha(curWord[0])){
+			curWord.erase(curWord.begin());
+		}
+		while (!curWord.empty() && !isalpha(curWord[curWord.size()-1])){
+			curWord.erase(curWord.end()-1);
+		}
+		if (!curWord.empty())
+			wordList.push_back(curWord);
+		wordStart = wordEnd + 1;
+		wordEnd=s.find_first_of(", ",wordStart);
+	}
+	//3.get a list of words, removing all beginning/ending punctuations
+	int syllableCount = 0;
+	for (int i = 0; i < wordList.size(); i++){
+		string curWord = wordList[i];
+		//cerr << curWord  << syllableCount << endl;
+		if (curWord.size() <= 3)
+			syllableCount++;
+		else{
+			if ( (curWord[curWord.size()-1] == 'e') && (curWord[curWord.size()-2] != 'l') )  
+				curWord.erase(curWord.end()-1);
+			else if ( (curWord.substr(curWord.size()-2,2).compare("es") ==0) ||
+				(curWord.substr(curWord.size()-2,2).compare("ed") ==0) ) {
+				curWord.erase(curWord.size()-2,2);
+			}			
+			int prevVowel = -10;
+			size_t vowel = curWord.find_first_of("aoeiuy");
+			while (vowel!=string::npos)
+			{
+				if (vowel - prevVowel > 1)
+					syllableCount++;
+				prevVowel = vowel; 
+				vowel=curWord.find_first_of("aoieuy",prevVowel+1);
+			}
+
+		}
+	}
+	//4.count # of syllable
+	double score = 206.835 - 1.015 * (wordList.size() * 1.0 / sentenceCount) - 84.6 * (syllableCount * 1.0 / wordList.size());
+	//calc
+	//cerr << "Sentence#: " << sentenceCount << endl;
+	//cerr << "Word#: " << wordList.size() << endl;
+	//cerr << "Syllable#: " << syllableCount << endl;
+	cout << fixed << setprecision(2) << score;
+	//output
+	return 0;
+}
