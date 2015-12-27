@@ -1,0 +1,280 @@
+#include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
+#include <vector>
+#include <sstream>
+#include <string>
+#include <map>
+#include <math.h>
+#include <algorithm>
+
+using namespace std;
+
+typedef vector<string> VS;
+typedef vector<int> VI;
+typedef vector<vector<int>> VII;
+
+bool isStatementlist(VS &statementlist);
+VI parseStatementlist(VS &statementlist);
+
+// 判断字符串是不是数字 
+//Reference: 作者： 大气象；http://www.cnblogs.com/greatverve/archive/2012/12/01/cpp-array-len.html 
+bool isNum(string str)
+{
+    stringstream sin(str);
+    double d;
+    char c;
+    if(!(sin >> d))
+        return false;
+    if (sin >> c)
+        return false;
+    return true;
+}
+
+//Create a VS from s while removing all whitespaces in s
+VS removeWhiteSpace(string s){
+	VS ans;
+	size_t wordStart = 0;
+	size_t wordEnd = s.find_first_of(" ");
+	while (wordEnd!=std::string::npos)
+	{
+		if (wordStart != wordEnd)
+			ans.push_back(s.substr(wordStart,wordEnd-wordStart));
+		wordStart= wordEnd + 1;
+		wordEnd=s.find_first_of(" ",wordStart);
+	}
+	return ans;
+}
+
+//print complexity vector, in the given format 
+void printComplexity(VI runtime){
+	bool isFirst = true;
+	for (int i = runtime.size() -1 ; i > 0; i--){
+		if (runtime[i] != 0){
+			if (!isFirst) //diff cases where + is not necessary
+				cout << "+";
+			if (runtime[i] == 1){// diff cases where constant is 1
+				cout << "n";
+			}
+			else{
+				cout << runtime[i] << "*n";
+			}
+			if (i > 1)//diff cases where exponential is 1
+				cout << "^" << i;
+			if (isFirst){//set isFirst to false
+				isFirst = !isFirst;
+			}
+		}
+	}
+	if (runtime[0]){ //special case where constant is nonzero
+		if (!isFirst)
+			cout << "+";
+		else
+			isFirst = !isFirst;
+		cout << runtime[0];
+	}
+	if (isFirst)//Special case where no running time
+		cout << 0;
+}
+
+//determine if a piece of words form a loop header
+bool isLoopHeader(string a, string b){
+	if (a.compare("LOOP") != 0)
+		return false;
+	if (b.compare("n") == 0 || isNum(b))
+		return true;
+	return false;
+}
+
+//determine if a piece of words form a loop statement
+bool isLoop(VS &statement){
+	if (statement.size() < 3 || statement[statement.size() - 1].compare("END") != 0)
+		return false;
+	if (!isLoopHeader(statement[0],statement[1]))
+		return false;
+	VS loopContents;
+	for (int i = 2; i < statement.size() - 1; i++){
+		loopContents.push_back(statement[i]);
+	}
+	return isStatementlist(loopContents);
+}
+
+//determine if a piece of words form an OP statement
+bool isOP(VS &statement){
+	if (statement.size() != 2 || statement[0].compare("OP") != 0)
+		return false;
+	else
+		return isNum(statement[1]);
+}
+
+//determine if a piece of words form a statement
+bool isStatement(VS &statement){
+	return ( isLoop(statement) || isOP(statement) );
+}
+
+//determine if a piece of words form a statementlist
+bool isStatementlist(VS &statementlist){
+	if (isStatement(statementlist))
+		return true;
+	else{
+		VS s;
+		for (int i = 0; i < statementlist.size(); i++){
+			s.push_back(statementlist[i]);
+			if (isStatement(s)){
+				VS rest;
+				for (int j = i + 1; j < statementlist.size(); j++){
+					rest.push_back(statementlist[j]);
+				}
+				if (isStatementlist(rest))
+					return true;
+			}
+		}
+		return false;
+	}
+}
+
+//determine if a piece of words form a program. The list of words are given from start in s to end in s(inclusive)
+bool isProgram(VS &s, int start, int end){
+	if (s[start].compare("BEGIN") != 0)
+		return false;
+	if (s[end].compare("END") != 0)
+		return false;
+	VS programContents;
+	for (int i = start + 1; i < end; i++)
+		programContents.push_back(s[i]);
+	return isStatementlist(programContents);
+}
+
+//addition of 2 vector
+VI vAdd(VI &a, VI &b){
+	VI ans;
+	for (int i = 0; i < 11; i++){
+		ans.push_back(a[i] +b[i]);
+	}
+	return ans;
+}
+
+//multiplication of a vector and n
+VI nMult(VI &a){
+	VI ans;
+	ans.push_back(0);
+	for (int i = 1; i < 11; i++){
+		ans.push_back(a[i-1]);
+	}
+	return ans;
+}
+
+//multiplication of a vector and k
+VI kMult(VI &a, int k){
+	VI ans;
+	for (int i = 0; i < 11; i++){
+		ans.push_back(a[i] * k);
+	}
+	return ans;
+}
+
+//parse a loop statement
+VI parseLoop(VS &statement){
+	VS loopContents;
+	for (int i = 2; i < statement.size() -1; i++){
+		loopContents.push_back(statement[i]);
+	}
+	VI innerLoop = parseStatementlist(loopContents);
+	if (statement[1].compare("n") == 0)
+		return nMult(innerLoop);
+	else
+		return kMult(innerLoop,atoi(statement[1].c_str()));// may not be working in C++ 99
+}
+
+//parse an OP statement
+VI parseOP(VS &statement){
+	VI ans;
+	ans.push_back(atoi( statement[1].c_str() ));
+	for (int i = 1; i < 11; i++)
+		ans.push_back(0);
+	return ans;
+}
+
+//parse statement
+VI parseStatement(VS &statement){
+	if (isLoop(statement))
+		return parseLoop(statement);
+	else if (isOP(statement))
+		return parseOP(statement);
+}
+
+//parse a ist of statements
+VI parseStatementlist(VS &statementlist){
+	if (isStatement(statementlist))
+		return parseStatement(statementlist);
+	else{
+		VS statement;
+		for (int i = 0; i < statementlist.size(); i++){
+			statement.push_back(statementlist[i]);
+			if (isStatement(statement)){
+				VI firstRuntime = parseStatement(statement);
+				VS rest;
+				for (int j = i + 1; j < statementlist.size(); j++){
+					rest.push_back(statementlist[j]);
+				}
+				VI restRuntime = parseStatementlist(rest);
+				return vAdd(firstRuntime,restRuntime);
+			}
+		}
+	}
+}
+
+//parse a piece of program from a list of words from start to end
+VI parseProgram(VS &s, int start, int end){	
+	VS programContents;
+	for (int i = start + 1; i < end; i++)
+		programContents.push_back(s[i]);
+	VI ans = parseStatementlist(programContents);
+	return ans;
+}
+
+int main(){
+	freopen("in.txt","r",stdin);
+	int tcase;
+	cin >> tcase;
+	string readin;
+	string s = "";
+	while (getline(cin,readin)){
+		s += readin;
+		s += " ";
+	}
+	//readin
+	VS codes = removeWhiteSpace(s);
+	//preprocess
+	int programStart = 0;
+	int programEnd;
+	VII complexity;
+	int countLoop = 0;
+	int countEnd = 0;
+	for (int programEnd = 0; programEnd < codes.size(); programEnd++){
+		if (codes[programEnd].compare("LOOP") == 0)//bookkeeping
+			countLoop++;
+		if (codes[programEnd].compare("END") == 0)
+			countEnd++;
+		if (countEnd - 1 == countLoop)//Program only happens when END is one more occurence than LOOP.Pruning
+			if (isProgram(codes,programStart,programEnd)){
+				VI runTime = parseProgram(codes,programStart,programEnd);
+				complexity.push_back(runTime);
+				programStart = programEnd + 1;
+			}
+		if (codes[programEnd].compare("BEGIN") ==0){//bookkeeping cleanup
+				countEnd = 0;
+				countLoop = 0;
+		}
+	}
+	//calculation
+	for (int i = 0; i <complexity.size(); i++){
+		cout << "Program #" << i+1 << endl;
+		cout << "Runtime = ";
+		printComplexity(complexity[i]);
+		cout << endl;
+		cout << endl;
+	}
+	//output
+	return 0;
+}
