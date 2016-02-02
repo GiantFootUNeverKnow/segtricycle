@@ -1,0 +1,50 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int f[1000][1000];
+
+int max(int a, int b) {
+	if (a >= b)
+		return a;
+	else return b;
+}
+
+int main() {
+	//FILE *stream;
+	//freopen_s(&stream,"Text.txt", "r", stdin);
+	int T;
+	cin >> T;
+	string s;
+	getline(cin, s);
+	while (T--) {
+		getline(cin, s);
+		if (s.empty()) {
+			cout << 0 << endl;
+			continue;
+		}
+		int n = s.length();
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++)
+				f[i][j] = 0;
+			f[i][i] = 1;
+		}
+		//init done
+		for (int len = 2; len <= n; len++) {
+			for (int i = 0; i + len - 1 < n; i++) {
+				int j = i + len - 1;
+				if (s[i] != s[j])
+					f[i][j] = max(f[i][j - 1], f[i + 1][j]);
+				else
+					f[i][j] = 2 + f[i + 1][j - 1];
+			}
+		}
+		//calc done
+		cout << f[0][n - 1] << endl;
+	}
+	return 0;
+}
