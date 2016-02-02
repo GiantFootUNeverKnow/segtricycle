@@ -1,0 +1,45 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include <math.h>
+
+using namespace std;
+
+long long int sum2(long long int t, long long int s) {
+	if (s > t)
+		return 0;
+	long long int sumt = (t * (t + 1) * (2 * t + 1)) / 6;
+	long long int sums = (s * (s + 1) * (2 * s + 1)) / 6;
+	return sumt - sums + s * s;
+}
+
+long long int sum1(long long int t, long long int s) {
+	if (s > t)
+		return 0;
+	long long int sumt = (t* t + t) / 2;
+	long long int sums = (s*s + s) / 2;
+	return sumt - sums + s;
+}
+
+int main() {
+	//FILE * stream;
+	//freopen_s(&stream, "Text.txt", "r", stdin);
+	long long int n;
+	cin >> n;
+	while (n >= 3) {
+		long long int sum = 0;
+		long long int upper = ceil(n / 2.0);
+		long long int lower = floor(n / 2.0);
+		if (upper == lower)
+			upper++;
+		long long int a, b, c;
+		a = ( sum1(n-upper-1,1) + sum2(n-upper-1,1) ) / 2;
+		b = 3 * (sum2(lower, 2) - sum1(lower, 2)) / 2;
+		c = sum1(lower-1,1) * n;
+		sum = a - b + c; 
+		cout << sum << endl;
+		cin >> n;
+	}
+	return 0;
+}
