@@ -1,0 +1,78 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <vector>
+#include <algorithm>
+#include <climits>
+#include <math.h>
+#include <utility>
+
+using namespace std;
+
+typedef pair<int, int> PII;
+typedef vector<PII> VPI;
+
+bool cpr_x(PII a, PII b) {
+	return (a.first < b.first);
+}
+
+bool cpr_y(PII a, PII b) {
+	return (a.second < b.second);
+}
+
+int calc_dist(PII a, PII b) {
+	return max(abs(a.first - b.first), abs(a.second - b.second));
+}
+
+int find_closest(VPI v) {
+	//base case
+	if (v.size() <= 5) {
+		int min = 5000000;
+		for (int i = 0; i < v.size(); i++)
+			for (int j = i+1; j < v.size(); j++)
+				if (calc_dist(v[i], v[j]) < min)
+					min = calc_dist(v[i], v[j]);
+		return min;
+	}
+	/*recursive calls*/
+	int midIndex = v.size() / 2;
+	VPI leftPac,rightPac;
+	for (int i = 0; i < midIndex; i++)
+		leftPac.push_back(v[i]);
+	for (int i = midIndex; i < v.size(); i++)
+		rightPac.push_back(v[i]);
+	int leftOpt = find_closest(leftPac);
+	int rightOpt = find_closest(rightPac);
+	int opt = min(leftOpt, rightOpt);
+	//find central band
+	VPI centBand;
+	for (int i = 0; i < v.size(); i++) {
+		if (abs(v[i].first - v[midIndex].first) < opt)
+			centBand.push_back(v[i]);
+	}
+	//calculate optimum of the band
+	sort(centBand.begin(), centBand.end(), cpr_y);
+	for (int i = 0; i+ 1 < centBand.size(); i++) {
+		if (calc_dist(centBand[i + 1], centBand[i]) < opt)
+			opt = calc_dist(centBand[i + 1], centBand[i]);
+	}
+	return opt;
+}
+
+int main() {
+	//FILE * stream;
+	//freopen_s(&stream, "Text.txt", "r", stdin);
+	int n;
+	while (cin >> n) {
+		VPI coord,coord_xorder,coord_yorder;
+		for (int i = 0; i < n; i++) {
+			int tx, ty;
+			cin >> tx >> ty;
+			coord.push_back(make_pair(tx, ty));
+		}
+		//readin
+		sort(coord.begin(), coord.end(),cpr_x);
+		cout << find_closest(coord) << endl;
+	}
+	return 0;
+}
