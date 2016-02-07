@@ -1,0 +1,81 @@
+#include <iostream>
+#include <queue>
+#include <vector>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include <utility>
+#include <set>
+#include <string.h>
+
+using namespace std;
+
+bool edges[201][201];
+int visited[201]; //0 means unvisited, 1 means visited, 2 means in queue1, 3 means in queue2
+
+int main() {
+	//FILE * stream;
+	//freopen_s(&stream, "Text.txt", "r", stdin);
+	int N, l,v,u;
+	while (cin >> N) {
+		if (N == 0)
+			break;
+		cin >> l;
+		memset(edges, 0, sizeof edges);
+		memset(visited, 0, sizeof visited);
+		for (int i = 0; i < l; i++) {
+			cin >> v >> u;
+			edges[v][u] = edges[u][v] = true;
+		}
+		//readin
+		queue<int> Q1,Q2;
+		Q1.push(0);
+		visited[0] = 2;
+		bool failflag = false;
+		while (!Q1.empty() || !Q2.empty()) {
+			while (!Q2.empty()) {
+				int cur = Q2.front();
+				Q2.pop();
+				visited[cur] = 1;
+				for (int j = 0; j < N; j++) 
+					if (edges[cur][j]) {
+						if (visited[j] == 3) {
+							failflag = true;
+							break;
+						}
+						else if (visited[j] == 0) {
+							visited[j] = 2;
+							Q1.push(j);
+						}
+					}
+				if (failflag)
+					goto here;
+			}
+			while (!Q1.empty()) {
+				int cur = Q1.front();
+				Q1.pop();
+				visited[cur] = 1;
+				for (int j = 0; j < N; j++)
+					if (edges[cur][j]) {
+						if (visited[j] == 2) {
+							failflag = true;
+							break;
+						}
+						else if (visited[j] == 0) {
+							visited[j] = 3;
+							Q2.push(j);
+						}
+					}
+				if (failflag)
+					goto here;
+			}
+		}
+		//bfs
+	here:	
+		if (failflag)
+			cout << "NOT BICOLORABLE." << endl;
+		else
+			cout << "BICOLORABLE." << endl;
+	}
+	return 0;
+}
