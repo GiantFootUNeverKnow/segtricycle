@@ -1,0 +1,60 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <vector>
+#include <utility>
+#include <algorithm>
+#include <cstring>
+
+using namespace std;
+
+bool  dp[201][20];
+
+int main() {
+	//FILE * stream;
+	//freopen_s(&stream, "Text.txt","r",stdin);
+	int tcase;
+	cin >> tcase;
+	while (tcase--) {
+		int M, C;
+		cin >> M >> C;
+		vector<vector<int> > shops;
+		for (int i = 0; i < C; i++) {
+			vector<int> shop;
+			int K;
+			cin >> K;
+			for (int j = 0; j < K; j++) {
+				int garment;
+				cin >> garment;
+				shop.push_back(garment);
+			}
+			shops.push_back(shop);
+		}
+		//readin
+		memset(dp, 0, sizeof dp);
+		for (int k = 0; k < shops[0].size(); k++) {
+			if (shops[0][k] <= M)
+				dp[shops[0][k]][0] = true;
+		}
+		//init done
+		for (int i = 1; i <= M; i++) {
+			for (int j = 1; j < C; j++) {
+				for (int k = 0; k < shops[j].size(); k++)
+					if ((i > shops[j][k]) && (dp[i - shops[j][k]][j - 1]))
+						dp[i][j] = true;
+			}
+		}
+		//dp
+		int solvable = -1;
+		for (int i = 0; i <= M; i++) {
+			if (dp[i][C - 1])
+				solvable = i;
+		}
+		if (solvable != -1)
+			cout << solvable << endl;
+		else
+			cout << "no solution" << endl;
+		//output
+	}
+	return 0;
+}
