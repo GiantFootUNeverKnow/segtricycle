@@ -1,0 +1,67 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <vector>
+#include <algorithm>
+#include <climits>
+#include <utility>
+
+#define INFINITY 10000000
+
+using namespace std;
+
+vector<vector<int>> f;//f[x][y] returns the maximum score Amy could win
+vector<int> v;
+vector<vector<int>> sum;
+int calc_f(int x, int y) {//recursive function to calc f array
+	if (x > y)
+		return -2;
+	if (f[x][y] != INFINITY)
+		return f[x][y];
+	if (x == y) {
+		f[x][y] = -v[x];
+		return f[x][y];
+	}
+	else {
+		if ( (y - x) % 2 == 0) {//bob's turn
+			if (v[y] > v[x]) 
+				f[x][y] = calc_f(x, y - 1) - v[y];
+			else
+				f[x][y] = calc_f(x + 1, y) - v[x];
+		}
+		else {//Amy's turn
+			f[x][y] = max(v[x] + calc_f(x + 1, y), v[y] + calc_f(x, y - 1));
+		}		
+		return f[x][y];
+	}
+}
+
+int main() {
+	//FILE * stream1, *stream2;
+	//freopen_s(&stream1, "Text.txt", "r", stdin);
+	//freopen_s(&stream2, "OUTPUT.txt", "w", stdout);
+	long long int n;
+	int game = 1;
+	while (cin >> n) {
+		if (n == 0)
+			break;
+		v.clear();
+		sum.clear();
+		f.clear();
+		for (int i = 0; i < n; i++) {
+			vector<int> arr1,arr2;
+			for (int j = 0; j < n; j++) {
+				arr1.push_back(INFINITY);
+				arr2.push_back(INFINITY);
+			}
+			f.push_back(arr1);
+			sum.push_back(arr2);
+			int cat;
+			cin >> cat;
+			v.push_back(cat);
+		}//init
+		cout << "In game " << game << ", the greedy strategy might lose by as many as " << calc_f(0,n-1) << " points." << endl;
+		game++;
+	}
+	return 0;
+}
