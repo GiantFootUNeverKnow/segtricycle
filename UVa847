@@ -1,0 +1,30 @@
+#include <iostream>
+#include <vector>
+#include <stdio.h>
+#include <stdlib.h>
+#include <algorithm>
+#include <math.h>
+
+using namespace std;
+
+int main() {
+	//FILE * stream1, *stream2;
+	//freopen_s(&stream1, "Text.txt", "r", stdin);
+	//freopen_s(&stream2, "OUTPUT.txt", "w", stdout);
+	long long int n;
+	while (cin >> n) {
+		int times = 0;
+		while (n > 1) {
+			if (times % 2 == 0)
+				n = (long long int)ceil(n / 9.0);
+			else
+				n = (long long int)ceil(n / 2.0);
+			times++;
+		}
+		if (times % 2 == 1)
+			cout << "Stan wins." << endl;
+		else
+			cout << "Ollie wins." << endl;
+	}
+	return 0;
+}
