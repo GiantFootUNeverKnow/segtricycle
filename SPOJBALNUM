@@ -1,0 +1,110 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <map>
+#include <unordered_map>
+#include <string>
+#include <set>
+#include <vector>
+#include <cstring>
+#include <algorithm>
+#include <utility>
+#include <iomanip>
+#include <stack>
+
+using namespace std;
+
+vector<int> digits;
+unsigned long long int f[20][60000][2];//f[i][T][k] represents #integers with i+1 digits in state T.
+//k=0: this number is actual, k=1: this number is under some bound 
+int pow3[10];
+
+int calc_pow3(int x) {
+	if (pow3[x] != 0)
+		return pow3[x];
+	if (x == 0) {
+		pow3[x] = 1;
+		return 1;
+	}
+	else {
+		pow3[x] = calc_pow3(x - 1) * 3;
+		return  pow3[x];
+	}
+}
+
+//state transition function
+int phi(int T, int k) {
+	int T_k = (T / pow3[k]) % 3;
+	if ( (k == 0) && (T == 0))
+		return 0;
+	if (T_k < 2)
+		T += pow3[k];
+	else
+		T -= pow3[k];
+	return T;
+}
+
+//return if a state is a valid state
+//may use hashing to speed up
+int check(int state) {
+	int modulo,digit;
+	digit = 0;
+	while (state) {
+		modulo = state % 3;
+		if ( ( (digit % 2) == (modulo % 2) ) && (modulo))
+			return 0;
+		state /= 3;
+		digit++;
+	}
+	return 1;
+}
+
+long long int calc_f(int i,int T, bool bound) {
+	if ( (!bound) && (f[i][T][bound] != -1) )
+		return f[i][T][bound];
+	f[i][T][bound] = 0;
+	int k = 9;
+	if (i == 0) {//base cases
+		if (bound)
+			k = digits[i];
+		for (k; k >= 0; k--)
+			f[i][T][bound] += check(phi(T, k));
+		return f[i][T][bound];
+	}
+	if (bound) {//recursion
+		k = digits[i] - 1;
+		f[i][T][bound] += calc_f(i - 1, phi(T, digits[i]), true);
+	}
+	for (k; k >= 0; k--) 
+		f[i][T][bound] += calc_f(i - 1,phi(T, k),false);
+	return f[i][T][bound];
+}
+
+
+long long int g(unsigned long long x) {
+	digits.clear();
+	string s = to_string(x);
+	for (int i = s.size()-1; i >= 0; i--) 
+		digits.push_back(s[i] - '0');
+	int m = s.size();
+	return calc_f(m - 1, 0, true);
+}
+
+int main() {
+	/*
+	FILE * stream1, *stream2;
+	freopen_s(&stream1, "Text.txt", "r", stdin);
+	freopen_s(&stream2, "OUTPUT.txt", "w", stdout);*/
+	long long int Tcase,tmp;
+	unsigned long long A, B;
+	cin >> Tcase;
+	memset(f, -1, sizeof f);
+	memset(pow3, 0, sizeof pow3);
+	tmp = calc_pow3(9);
+	//init
+	while (Tcase--) {
+		cin >> A >> B;
+		cout << g(B) - g(A-1) << endl; //may need to add one for A included
+	}
+	return 0;
+}
