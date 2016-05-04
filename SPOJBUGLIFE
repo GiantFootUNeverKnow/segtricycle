@@ -1,0 +1,107 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <map>
+#include <unordered_map>
+#include <string>
+#include <set>
+#include <vector>
+#include <cstring>
+#include <algorithm>
+#include <utility>
+#include <iomanip>
+#include <queue>
+#include <stack>
+
+using namespace std;
+
+typedef vector<int> VI;
+typedef vector<vector<int>> VVI;
+
+VVI edges;
+int visited[2001]; //0 means unvisited, 1 means visited, 2 means in queue1, 3 means in queue2
+
+
+int main() {
+	/*
+	FILE * stream1, *stream2;
+	freopen_s(&stream1, "Text.txt", "r", stdin);
+	freopen_s(&stream2, "OUTPUT.txt", "w", stdout);*/
+	int tcase,times;
+	times = 1;
+	cin >> tcase;
+	int N, l, v, u;
+	while (tcase--) {
+		cout << "Scenario #" << times << ":" << endl;
+		cin >> N >> l;
+		times++;
+		edges.clear();
+		memset(visited, 0, sizeof visited);
+		for (int i = 0; i < N; i++) {
+			VI tmp;
+			edges.push_back(tmp);
+		}
+		for (int i = 0; i < l; i++) {
+			//cin >> v >> u;
+			scanf("%d%d", &v, &u);
+			edges[u-1].push_back(v-1);
+			edges[v-1].push_back(u-1);
+			//edges[v][u] = edges[u][v] = true;
+		}
+		//readin
+		bool failflag = false;
+		for (int i = 0; i < N; i++) {
+			if (visited[i] == 1)
+				continue;
+			queue<int> Q1, Q2;
+			Q1.push(i);
+			visited[i] = 2;
+			failflag = false;
+			while (!Q1.empty() || !Q2.empty()) {
+				while (!Q2.empty()) {
+					int cur = Q2.front();
+					Q2.pop();
+					visited[cur] = 1;
+					for (int j = 0; j < edges[cur].size(); j++) {
+						int nextNode = edges[cur][j];
+						if (visited[nextNode] == 3) {
+							failflag = true;
+							break;
+						}
+						else if (visited[nextNode] == 0) {
+							visited[nextNode] = 2;
+							Q1.push(nextNode);
+						}
+					}
+					if (failflag)
+						goto here;
+				}
+				while (!Q1.empty()) {
+					int cur = Q1.front();
+					Q1.pop();
+					visited[cur] = 1;
+					for (int j = 0; j < edges[cur].size(); j++) {
+						int nextNode = edges[cur][j];
+						if (visited[nextNode] == 2) {
+							failflag = true;
+							break;
+						}
+						else if (visited[nextNode] == 0) {
+							visited[nextNode] = 3;
+							Q2.push(nextNode);	
+						}
+					}
+					if (failflag)
+						goto here;
+				}
+			}
+			//bfs
+		}
+		here:
+		if (failflag)
+			cout << "Suspicious bugs found!" << endl;
+		else
+			cout << "No suspicious bugs found!" << endl;
+	}
+	return 0;
+}
