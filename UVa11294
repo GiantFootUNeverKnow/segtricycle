@@ -1,0 +1,126 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <map>
+#include <unordered_map>
+#include <string>
+#include <set>
+#include <vector>
+#include <cstring>
+#include <algorithm>
+#include <utility>
+#include <iomanip>
+#include <stack>
+#include <memory.h>
+
+const int MAXV = 65;
+const int MAXE = 4200;
+
+using namespace std;
+
+typedef vector<pair<int, int>> VPI;
+
+struct edge { int e, nxt; };
+int V, E;
+edge e[MAXE], er[MAXE];
+int sp[MAXV], spr[MAXV];
+int group_cnt, group_num[MAXV];
+bool v[MAXV];
+int stk[MAXV];
+void fill_forward(int x)
+{
+	int i;
+	v[x] = true;
+	for (i = sp[x]; i; i = e[i].nxt) if (!v[e[i].e]) fill_forward(e[i].e);
+	stk[++stk[0]] = x;
+}
+void fill_backward(int x)
+{
+	int i;
+	v[x] = false;
+	group_num[x] = group_cnt;
+	for (i = spr[x]; i; i = er[i].nxt) if (v[er[i].e]) fill_backward(er[i].e);
+}
+void add_edge(int v1, int v2) //add edge v1->v2
+{
+	e[++E].e = v2; e[E].nxt = sp[v1]; sp[v1] = E;
+	er[E].e = v1; er[E].nxt = spr[v2]; spr[v2] = E;
+}
+void SCC()
+{
+	int i;
+	stk[0] = 0;
+	memset(v, false, sizeof(v));
+	for (i = 1; i <= V; i++) if (!v[i]) fill_forward(i);
+	group_cnt = 0;
+	for (i = stk[0]; i >= 1; i--) if (v[stk[i]]) { group_cnt++; fill_backward(stk[i]); }
+}
+
+
+int main() {
+	/*
+	FILE * stream1, *stream2;
+	freopen_s(&stream1, "Text.txt", "r", stdin);
+	freopen_s(&stream2, "OUTPUT.txt", "w", stdout);*/
+	int n, m;
+	while (cin >> n >> m) {
+		if (n * m == 0)
+			break;
+		//init
+		string bad1, bad2;
+		int v1, v2, p1, p2;
+		memset(e, 0, sizeof e);
+		memset(er, 0, sizeof er);
+		memset(sp, 0, sizeof sp);
+		memset(spr, 0, sizeof spr);
+		memset(stk, 0, sizeof stk);
+		memset(group_num, 0, sizeof group_num);
+		V = 2 * (n + 1);
+		E = 0;
+		for (int i = 1; i <= m; i++) {
+			cin >> bad1 >> bad2;
+			p1 = stoi(bad1.substr(0, bad1.size() - 1));
+			p2 = stoi(bad2.substr(0, bad2.size() - 1));
+			v1 = 2 * p1 + 2;
+			if (bad1[bad1.size() - 1] == 'h')
+				v1 -= 1; 
+			v2 = 2 * p2 + 2;
+			if (bad2[bad2.size() - 1] == 'h')
+				v2 -= 1;
+			//bads.push_back(make_pair(v1, v2));
+			add_edge(p1 * 4 + 3 - v1, v2);
+			add_edge(p2 * 4 + 3 - v2, v1);
+		}
+		add_edge(1, 2 * n + 2);
+		add_edge(2 * n + 2, 2);
+		add_edge(1, 2 * n + 1);
+		add_edge(2 * n + 1, 2);
+		//SCC
+		SCC();
+		bool fail = false;
+		for (int i = 0; i <= n; i++) {
+			if (group_num[2 * i + 2] == group_num[2 * i + 1])
+				fail = true;
+		}
+		//output
+		if (fail) {
+			cout << "bad luck" << endl;
+			continue;
+		}
+		for (int i = 1; i < n; i++) {//in ith couple 
+			if (i > 1)
+				cout << " ";
+			for (int j = 1; j <= 2 * n + 2; j++) 
+				if ((stk[j] - 1) / 2 == i) {
+					if (stk[j] % 2 == 1)
+						cout << i << "h";
+					else
+						cout << i << "w";
+					break;
+				}
+		}
+		cout << endl;
+	}
+
+	return 0;
+}
