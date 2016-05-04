@@ -66,3 +66,5 @@
 ##UVa11378 Don't let UVA fool you. It is too bitch! It uses a default value for exception case without telling what the value is in the problem.
 ##Seriously: I relearned the fact that vector.size() is a unsigned integer, don't do (vector.size()-1 > i) comparison. 
 ##Another good takeaway is that max/min function is in algorithm
+
+##UVa802 vector can be created by an array. Syntax: int _b[6]; VD b(_b, _b + 6);	//construct b from b
