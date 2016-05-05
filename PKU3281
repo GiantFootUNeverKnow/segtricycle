@@ -1,0 +1,106 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <map>
+#include <string>
+#include <set>
+#include <queue>
+#include <vector>
+#include <cstring>
+#include <algorithm>
+#include <iomanip>
+#include <stack>
+
+const int MAXV = 500;
+using namespace std;
+int pre[MAXV];
+int cap[MAXV][MAXV];
+int fnet[MAXV][MAXV];
+
+int fordFulkerson(int n, int s, int t)
+{   // ASSUMES: cap[u][v] stores capacity of edge (u,v).  cap[u][v] = 0 for no edge.
+
+	// Initialize the flow network so that fnet[u][v] = 0 for all u,v
+	int flow = 0;  // no flow yet
+	
+	while (true) {
+		// Find an augmenting path, using BFS
+		for (int i = 0; i < n; i++)
+			pre[i] = -1;
+		queue<int> q;
+		pre[s] = -2;
+		q.push(s);
+		while (!q.empty() && pre[t] == -1) {
+			int u = q.front();
+			q.pop();
+
+			for (int v = 0; v < n; v++) {
+				if (pre[v] == -1) {   // not seen yet
+					if (fnet[v][u] || fnet[u][v] < cap[u][v]) {
+						// either a backward edge (v,u) or a forward edge (u,v)
+						pre[v] = u;
+						q.push(v);
+					}
+				}
+			}
+		}
+
+		// See if we couldn't find any path to t (t has no parents)
+		if (pre[t] == -1) break;
+
+		// Get the bottleneck capacity
+		int bot = INT_MAX;
+		for (int v = t, u = pre[v]; u >= 0; v = u, u = pre[v]) {
+			if (fnet[v][u]) // always use backward edge over forward
+				bot = min(bot, fnet[v][u]);
+			else // must be a forward edge otherwise
+				bot = min(bot, cap[u][v] - fnet[u][v]);
+		}
+		
+		// update the flow network
+		for (int v = t, u = pre[v]; u >= 0; v = u, u = pre[v]) {
+			if (fnet[v][u]) // backward edge ­> subtract
+				fnet[v][u] -= bot;
+			else // forward edge ­> add
+				fnet[u][v] += bot;
+		}
+		// Sent 'bot' amount of flow from s to t, so update flow            
+		flow += bot;
+	}
+	
+	return flow;
+}
+
+int main() {/*
+	FILE * stream1, *stream2;
+	freopen_s(&stream1, "Text.txt", "r", stdin);
+	freopen_s(&stream2, "OUTPUT.txt", "w", stdout);*/
+	int N, F, D;
+	cin >> N >> F >> D;
+	//0 is big source, at the side of food, 1 is big sink, at the side of drink
+	//, [2,1+F] is food, [2+F,1+F+D] is drink, [2+F+D,2+F+D+2*N] is cow
+	for (int i = 2; i < 2 + F; i++)
+		cap[0][i] = 1;
+	for (int i = 2 + F; i < 2 + F + D; i++)
+		cap[i][1] = 1;
+	for (int i = 2 + F + D; i < 2 + F + D + 2 * N; i += 2)
+		cap[i][i + 1] = 1;
+	for (int i = 0; i < N; i++) {
+		int cow = 2 + F + D + i * 2;
+		int f, d, cat;
+		cin >> f >> d;
+		for (int j = 0; j < f; j++) {
+			cin >> cat;
+			cap[cat + 1][cow] = 1;
+		}
+		for (int j = 0; j < d; j++) {
+			cin >> cat;
+			cap[cow + 1][cat + 1 + F] = 1;
+		}
+	}
+	memset(pre, 0, sizeof 0);
+	memset(fnet, 0, sizeof 0);
+	//init
+	cout << fordFulkerson(2 + 2 * N + F + D,0,1) << endl;
+	return 0;
+}
