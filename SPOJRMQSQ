@@ -1,0 +1,75 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <map>
+#include <unordered_map>
+#include <string>
+#include <set>
+#include <vector>
+#include <cstring>
+#include <algorithm>
+#include <utility>
+#include <iomanip>
+#include <stack>
+#include <climits>
+
+using namespace std;
+
+const int MAXN = 100003;
+int a[MAXN];
+int tree[MAXN * 4];
+
+int minVal(int x, int y) { return (x < y) ? x : y; }
+int getMid(int s, int e) { return s + (e - s) / 2; }
+
+int RMQ(int ss, int se, int qs, int qe, int node){
+	if ((qs > se) || (qe < ss))
+		return LONG_MAX;
+	if ((qs <= ss) && (qe >= se))
+		return tree[node];
+	int mid = getMid(ss, se);
+	if (mid >= qe)
+		return RMQ(ss, mid, qs, qe, node * 2);
+	else if (mid < qs)
+		return RMQ(mid + 1, se, qs, qe, node * 2 + 1);
+	else
+		return minVal(RMQ(ss, mid, qs, qe, node * 2), RMQ(mid + 1, se, qs, qe, node * 2 + 1));
+}
+
+int RMQ2(int n, int qs, int qe) {
+	return (RMQ(0, n - 1, qs, qe, 1));
+}
+
+int construct( int ss, int se, int node) {
+	if (ss == se) {
+		tree[node] = a[ss];
+		return tree[node];
+	}
+	int mid = getMid(ss, se);
+	tree[node] = minVal(construct(ss,mid,node*2),construct(mid+1,se,node*2+1));
+	return tree[node];
+}
+
+void constructST( int n) {
+	construct( 0, n - 1, 1);
+}
+
+int main() {
+	/*
+	FILE * stream1, *stream2;
+	freopen_s(&stream1, "Text.txt", "r", stdin);
+	freopen_s(&stream2, "OUTPUT.txt", "w", stdout);*/
+	int N,M;
+	memset(tree, 0, sizeof tree);
+	cin >> N;
+	for (int i = 0; i < N; i++) 
+		cin >> a[i];
+	constructST(N);
+	cin >> M;
+	for (int i = 0; i < M; i++) {
+		int l, r;
+		cin >> l >> r;
+		cout << RMQ2(N, l, r) << endl;
+	}
+	return 0;
+}
