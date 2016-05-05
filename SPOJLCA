@@ -1,0 +1,72 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <map>
+#include <unordered_map>
+#include <string>
+#include <set>
+#include <vector>
+#include <cstring>
+#include <algorithm>
+#include <utility>
+#include <iomanip>
+#include <stack>
+
+using namespace std;
+
+struct Node {
+	int parent;
+	vector<int> children;
+};
+Node a[1001];
+
+int lca(int node, int x, int y) {
+	if (node == x)
+		return x;
+	if (node == y)
+		return y;
+	int res = -1;
+	for (int j = 0; j < a[node].children.size(); j++) {
+		int update = lca(a[node].children[j], x, y);
+		if (update != -1) {
+			if (update != x && update != y)
+				return update;
+			if (res != -1)
+				return node;
+			res = update;
+		}
+	}
+	return res;
+}
+
+int main() {/*
+	FILE * stream1, *stream2;
+	freopen_s(&stream1, "Text.txt", "r", stdin);
+	freopen_s(&stream2, "OUTPUT.txt", "w", stdout);*/
+	int tcase,times;
+	times = 1;
+	cin >> tcase;
+	while (tcase--) {
+		cout << "Case " << times++ << ":" << endl;
+		memset(a, 0, sizeof a);
+		int N, m, cat, Q, x, y;
+		cin >> N;
+		for (int i = 1; i <= N; i++) {
+			cin >> m;
+			for (int j = 0; j < m; j++) {
+				cin >> cat;
+				a[cat].parent = i;
+				a[i].children.push_back(cat);
+			}
+		}//tree is done
+		int root = 1;
+		while (a[root].parent)
+			root = a[root].parent;
+		cin >> Q;
+		for (int i = 0; i < Q; i++) {
+			cin >> x >> y;
+			cout << lca(root, x, y) << endl;
+		}
+	}	
+	return 0;
+}
